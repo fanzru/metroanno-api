@@ -28,9 +28,10 @@ func main() {
 	middlewareAuth := services.RegisterMiddleware(db, cfg)
 
 	// services
+	accountsHandler := services.RegisterServiceAccounts(db, cfg)
 
 	mHandler := routes.ModuleHandler{
-
+		AccountHandler: accountsHandler,
 		MiddlewareAuth: middlewareAuth,
 	}
 

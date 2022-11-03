@@ -55,6 +55,6 @@ func (m MiddlewareAuth) getUserIdFromJWT(ctx echo.Context) int {
 
 	// Bind UserID to context
 	ctx.Set("user_id", claims.UserId)
-	ctx.Set("user_email", claims.Email)
+	ctx.Set("usernamel", claims.Username)
 	return 1
 }

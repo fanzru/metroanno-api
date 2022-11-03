@@ -52,15 +52,5 @@ func New() (Config, error) {
 
 	// jwt token secret
 	Config.JWTTokenSecret = os.Getenv("JWT_TOKEN")
-
-	// Grobid Service
-	Config.Grobid.GrobidUrlPdfToTei = os.Getenv("GROBID_URL_PDF_TO_TEI")
-
-	// S3 Storage
-	Config.S3.AccessKeyIdS3 = os.Getenv("ACCESS_KEY_ID_S3")
-	Config.S3.SecretAccessKeyS3 = os.Getenv("SECRET_ACCESS_KEY_S3")
-	Config.S3.BucketName = os.Getenv("BUCKET_NAME")
-	Config.S3.Endpoint = os.Getenv("ENDPOINT")
-
 	return Config, nil
 }

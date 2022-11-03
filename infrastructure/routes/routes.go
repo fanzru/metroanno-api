@@ -2,6 +2,7 @@ package routes
 
 import (
 	"log"
+	accounts "metroanno-api/app/accounts/http"
 	"metroanno-api/infrastructure/middleware"
 	"net/http"
 
@@ -10,6 +11,7 @@ import (
 
 type ModuleHandler struct {
 	MiddlewareAuth middleware.MiddlewareAuth
+	AccountHandler accounts.AccountHandler
 }
 
 func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
@@ -20,6 +22,11 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	app.GET("/ping", func(c echo.Context) error {
 		return c.String(http.StatusOK, "FANZRU PASTI LULUS S1 INFORMATIKA 200 OK")
 	})
+
+	//account
+	accountsgateway := app.Group("/accounts")
+	accountsgateway.POST("/register/annotator", h.AccountHandler.RegisterUser)
+	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
 
 	return app
 }

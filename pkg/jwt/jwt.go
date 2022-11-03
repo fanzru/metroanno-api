@@ -3,14 +3,16 @@ package jwt
 import (
 	"errors"
 	"fmt"
+	"metroanno-api/app/accounts/domain/models"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
 type Claims struct {
-	UserId int64  `json:"user_id"`
-	Email  string `json:"email"`
+	UserId   int64  `json:"user_id"`
+	Username string `json:"username"`
+
 	jwt.StandardClaims
 }
 
@@ -18,11 +20,11 @@ var (
 	ErrTokenInvalid = errors.New("token invalid")
 )
 
-func EncodeToken(id int64, email string, secret string) (string, error) {
+func EncodeToken(user models.User, secret string) (string, error) {
 	expirationTime := time.Now().Add(time.Hour * 24 * 30)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
-		UserId: id,
-		Email:  email,
+		UserId:   user.Id,
+		Username: user.Username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
