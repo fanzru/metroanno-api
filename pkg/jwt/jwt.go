@@ -10,9 +10,11 @@ import (
 )
 
 type Claims struct {
-	UserId   int64  `json:"user_id"`
-	Username string `json:"username"`
-
+	UserId              int64  `json:"user_id"`
+	Username            string `json:"username"`
+	Type                uint64 `json:"type"`
+	IsDocumentAnnotator bool   `json:"is_document_annotator"`
+	IsQuestionAnnotator bool   `json:"is_question_annotator"`
 	jwt.StandardClaims
 }
 
@@ -23,8 +25,11 @@ var (
 func EncodeToken(user models.User, secret string) (string, error) {
 	expirationTime := time.Now().Add(time.Hour * 24 * 30)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
-		UserId:   user.Id,
-		Username: user.Username,
+		UserId:              user.Id,
+		Username:            user.Username,
+		Type:                user.Type,
+		IsDocumentAnnotator: user.IsDocumentAnnotator,
+		IsQuestionAnnotator: user.IsQuestionAnnotator,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

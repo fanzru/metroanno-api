@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	accounts "metroanno-api/app/accounts/http"
+	annotations "metroanno-api/app/annotation/http"
 	"metroanno-api/infrastructure/middleware"
 	"net/http"
 
@@ -10,8 +11,9 @@ import (
 )
 
 type ModuleHandler struct {
-	MiddlewareAuth middleware.MiddlewareAuth
-	AccountHandler accounts.AccountHandler
+	MiddlewareAuth     middleware.MiddlewareAuth
+	AccountHandler     accounts.AccountHandler
+	AnnotationsHandler annotations.AnnotationHandler
 }
 
 func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
@@ -23,10 +25,14 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 		return c.String(http.StatusOK, "FANZRU PASTI LULUS S1 INFORMATIKA 200 OK")
 	})
 
-	//account
+	//accounts
 	accountsgateway := app.Group("/accounts")
 	accountsgateway.POST("/register/annotator", h.AccountHandler.RegisterUser)
+	accountsgateway.POST("/register/admin", h.AccountHandler.RegisterAdmin)
 	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
 
+	//documents
+	documentsgateway := app.Group("/documents")
+	documentsgateway.POST("/add", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.AddTheory))
 	return app
 }
