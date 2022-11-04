@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "backend - metroanno",
+      "script": "make run"
+    }
+  ]
+}
