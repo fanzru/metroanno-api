@@ -23,3 +23,28 @@ func (a *AnnotationsApp) AddDocument(ctx echo.Context, param request.ReqAddDocum
 	}
 	return nil
 }
+
+func (a *AnnotationsApp) GetDocumentsById(ctx echo.Context, documentId int64) (*models.Document, error) {
+	document, err := a.AnnotationsRepo.GetDocumentsById(ctx, documentId)
+	if err != nil {
+		return nil, err
+	}
+
+	return document, nil
+}
+
+func (a *AnnotationsApp) GetAllDocuments(ctx echo.Context) (*[]models.Document, error) {
+	documents, err := a.AnnotationsRepo.GetAllDocuments(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return documents, nil
+}
+
+func (a *AnnotationsApp) UpdateDocumentsById(ctx echo.Context, param request.ReqEditDocument) (*models.Document, error) {
+	document, err := a.AnnotationsRepo.UpdateDocumentsById(ctx, param)
+	if err != nil {
+		return nil, err
+	}
+	return document, nil
+}

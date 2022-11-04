@@ -8,6 +8,7 @@ type ReqAddDocument struct {
 }
 
 type ReqEditDocument struct {
+	DocumentId           int64  `json:"document_id" validate:"required"`
 	SubjectId            int64  `json:"subject_id" validate:"required"`
 	LearningOutcome      string `json:"learning_outcome"`
 	TextDocument         string `json:"text_document" validate:"required"`
