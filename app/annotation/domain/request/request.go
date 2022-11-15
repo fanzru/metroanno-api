@@ -14,3 +14,8 @@ type ReqEditDocument struct {
 	TextDocument         string `json:"text_document" validate:"required"`
 	MinNumberOfQuestions int64  `json:"min_number_of_questions" validate:"required"`
 }
+
+type ReqAddQuestionType struct {
+	QuestionType string `json:"question_type" validate:"required"`
+	Description  string `json:"description" validate:"required"`
+}

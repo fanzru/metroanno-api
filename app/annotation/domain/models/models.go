@@ -18,3 +18,11 @@ type Document struct {
 	CreatedAt                              time.Time `json:"created_at" gorm:"created_at"`
 	DeletedAt                              null.Time `json:"deleted_at" gorm:"deleted_at"`
 }
+
+type QuestionType struct {
+	Id           int64     `json:"id" gorm:"id"`
+	QuestionType string    `json:"question_type" gorm:"question_type"`
+	Description  string    `json:"description" gorm:"question_type"`
+	CreatedAt    time.Time `json:"created_at" gorm:"created_at"`
+	DeletedAt    null.Time `json:"deleted_at" gorm:"deleted_at"`
+}

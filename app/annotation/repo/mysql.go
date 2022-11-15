@@ -14,6 +14,9 @@ type Impl interface {
 	GetDocumentsById(ctx echo.Context, documentId int64) (*models.Document, error)
 	GetAllDocuments(ctx echo.Context) (*[]models.Document, error)
 	UpdateDocumentsById(ctx echo.Context, param request.ReqEditDocument) (*models.Document, error)
+	GetAllQuestionTypes(ctx echo.Context) ([]models.QuestionType, error)
+	CreateQuestionTypes(ctx echo.Context, param request.ReqAddQuestionType) (*models.QuestionType, error)
+	DeleteQuestionTypes(ctx echo.Context, id int64) (*models.QuestionType, error)
 }
 
 type AnnotationsRepo struct {
