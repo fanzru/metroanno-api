@@ -1,4 +1,4 @@
-CREATE TABLE `question_annoatations` (
+CREATE TABLE `question_annotations` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `document_id` INT(11) NOT NULL,

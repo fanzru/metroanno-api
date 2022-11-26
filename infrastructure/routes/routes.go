@@ -37,11 +37,21 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	documentsgateway.PUT("/edit", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.EditTheory))
 	documentsgateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllDocuments))
 	documentsgateway.GET("/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetDocumentById))
+	documentsgateway.DELETE("/delete/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.DeleteDocumentsByID))
 
 	//question-type
 	questiongateway := app.Group("/question-type")
 	questiongateway.POST("/create", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.AddQuestionsTypes))
 	questiongateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllQuestionsTypes))
 	questiongateway.DELETE("/delete/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.DeleteQuestionsTypes))
+
+	// feedback
+	feedbackgateway := app.Group("/feedback")
+	feedbackgateway.POST("/create", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.CreateFeedback))
+
+	// question annotations
+	questionannotationsgateway := app.Group("/question-annotations")
+	questionannotationsgateway.POST("/bulk", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.BulkInsertQuestion))
+
 	return app
 }

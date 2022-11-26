@@ -48,3 +48,11 @@ func (a *AnnotationsApp) UpdateDocumentsById(ctx echo.Context, param request.Req
 	}
 	return document, nil
 }
+
+func (a *AnnotationsApp) DeleteDocumentsByID(ctx echo.Context, id int64) (*models.Document, error) {
+	result, err := a.AnnotationsRepo.DeleteDocumentsByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

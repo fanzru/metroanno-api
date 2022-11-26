@@ -67,3 +67,17 @@ func (h *AnnotationHandler) GetAllDocuments(ctx echo.Context) error {
 	}
 	return response.ResponseSuccessOK(ctx, document)
 }
+
+func (h *AnnotationHandler) DeleteDocumentsByID(ctx echo.Context) error {
+	s := ctx.Param("id")
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	result, err := h.App.DeleteDocumentsByID(ctx, int64(id))
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+	return response.ResponseSuccessOK(ctx, result)
+}
