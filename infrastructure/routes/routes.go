@@ -22,7 +22,10 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 
 	// test api connect or not
 	app.GET("/ping", func(c echo.Context) error {
-		return c.String(http.StatusOK, "FANZRU PASTI LULUS S1 INFORMATIKA 200 OK")
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"code":    "good connection",
+			"message": "metroanno api 200 OK",
+		})
 	})
 
 	//accounts
@@ -30,6 +33,7 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	accountsgateway.POST("/register/annotator", h.AccountHandler.RegisterUser)
 	accountsgateway.POST("/register/admin", h.AccountHandler.RegisterAdmin)
 	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
+	accountsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AccountHandler.UserProfile))
 
 	//documents
 	documentsgateway := app.Group("/documents")

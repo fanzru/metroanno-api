@@ -1,7 +1,7 @@
 package response
 
 import (
-	"time"
+	modelsannotation "metroanno-api/app/annotation/domain/models"
 
 	"github.com/volatiletech/null/v9"
 )
@@ -10,11 +10,21 @@ type UserLoginRes struct {
 	AccessToken string `json:"access_token"`
 }
 
-type UserProfileRes struct {
-	ID        int64       `json:"id"`
-	Name      string      `json:"name" `
-	Email     string      `json:"email"`
-	PhotoUrl  null.String `json:"photo_url"`
-	CreatedAt time.Time   `json:"created_at"`
-	DeletedAt null.Time   `json:"deleted_at"`
+type ProfileRes struct {
+	User     UserRes                    `json:"user"`
+	Document *modelsannotation.Document `json:"document"`
+}
+type UserRes struct {
+	Id                        int64       `json:"id" gorm:"id"`
+	Type                      uint64      `json:"type" gorm:"type"`
+	IsDocumentAnnotator       bool        `json:"is_document_annotator" gorm:"is_document_annotator"`
+	IsQuestionAnnotator       bool        `json:"is_question_annotator" gorm:"is_question_annotator"`
+	SubjectPreference         null.String `json:"subject_preference" gorm:"subject_preference"`
+	Username                  string      `json:"username" gorm:"username"`
+	Contact                   string      `json:"contact" gorm:"contact"`
+	Age                       int64       `json:"age" gorm:"age"`
+	NumberOfDocumentAdded     int64       `json:"number_of_document_added" gorm:"number_of_document_added"`
+	NumberOfQuestionAnnotated int64       `json:"number_of_question_annotated" gorm:"number_of_question_annotated"`
+	Status                    string      `json:"status" gorm:"status"`
+	CurrentDocumentID         int64       `json:"current_document_id" gorm:"current_document_id"`
 }

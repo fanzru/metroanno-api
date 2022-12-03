@@ -90,3 +90,13 @@ func (h *AccountHandler) Login(ctx echo.Context) error {
 
 	return response.ResponseSuccessOK(ctx, token)
 }
+
+func (h *AccountHandler) UserProfile(ctx echo.Context) error {
+	r, err := h.AccountsApp.UserProfile(ctx)
+
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	return response.ResponseSuccessOK(ctx, r)
+}
