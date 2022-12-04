@@ -39,4 +39,5 @@ const TableDocuments = "documents"
 var (
 	ErrDocumentNotFound  = errors.New("you are not included in any document")
 	ErrDocumentIsDeleted = errors.New("your document assigned is deleted")
+	ErrInstanceNotFound  = errors.New("user not found")
 )

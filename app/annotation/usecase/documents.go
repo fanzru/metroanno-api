@@ -33,7 +33,7 @@ func (a *AnnotationsApp) GetDocumentsById(ctx echo.Context, documentId int64) (*
 	return document, nil
 }
 
-func (a *AnnotationsApp) GetAllDocuments(ctx echo.Context) (*[]models.Document, error) {
+func (a *AnnotationsApp) GetAllDocuments(ctx echo.Context) ([]models.Document, error) {
 	documents, err := a.AnnotationsRepo.GetAllDocuments(ctx)
 	if err != nil {
 		return nil, err

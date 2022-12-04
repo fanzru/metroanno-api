@@ -25,8 +25,8 @@ func (a *AnnotationsRepo) GetDocumentsById(ctx echo.Context, documentId int64) (
 	return document, nil
 }
 
-func (a *AnnotationsRepo) GetAllDocuments(ctx echo.Context) (*[]models.Document, error) {
-	document := &[]models.Document{}
+func (a *AnnotationsRepo) GetAllDocuments(ctx echo.Context) ([]models.Document, error) {
+	document := []models.Document{}
 	err := a.MySQL.DB.Table("documents").Find(&document).Error
 	if err != nil {
 		return nil, err

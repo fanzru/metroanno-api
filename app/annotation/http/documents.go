@@ -81,3 +81,11 @@ func (h *AnnotationHandler) DeleteDocumentsByID(ctx echo.Context) error {
 	}
 	return response.ResponseSuccessOK(ctx, result)
 }
+
+func (h *AnnotationHandler) RandomDocuments(ctx echo.Context) error {
+	document, err := h.App.RandomDocuments(ctx)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+	return response.ResponseSuccessOK(ctx, document)
+}
