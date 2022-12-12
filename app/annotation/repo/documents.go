@@ -6,6 +6,7 @@ import (
 	"metroanno-api/app/annotation/domain/request"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 func (a *AnnotationsRepo) CreateTheory(ctx echo.Context, document models.Document) error {
@@ -56,6 +57,25 @@ func (a *AnnotationsRepo) UpdateDocumentsById(ctx echo.Context, param request.Re
 	return document, nil
 }
 
+func (a *AnnotationsRepo) UpdateAddDoneDocumentsById(ctx echo.Context, param request.ReqEditDocument, tx *gorm.DB) (*gorm.DB, error) {
+	documentfind := &models.Document{}
+	err := tx.Table("documents").Where("id=?", param.DocumentId).First(documentfind).Error
+	if err != nil {
+		return nil, err
+	}
+
+	document := &models.Document{
+		Id:                     param.DocumentId,
+		DoneNumberOfAnnotators: documentfind.DoneNumberOfAnnotators + 1,
+	}
+
+	err = tx.Table("documents").Where("id = ?", param.DocumentId).Updates(document).Error
+	if err != nil {
+		return nil, err
+	}
+	return tx, nil
+}
+
 func (a *AnnotationsRepo) GetDocumentIdByUserId(ctx echo.Context) (int64, error) {
 	modelAccount := &accountsModel.User{}
 	err := a.MySQL.DB.Table(TableUsers).Where("id = ?", ctx.Get("user_id")).Find(&modelAccount).Error
@@ -94,4 +114,14 @@ func (a *AnnotationsRepo) DeleteDocumentsByID(ctx echo.Context, id int64) (*mode
 		return nil, err
 	}
 	return document, nil
+}
+
+func (a *AnnotationsRepo) GetAllDocumentDoneUser(ctx echo.Context, userID int64) (*[]models.DoneDocumentUser, error) {
+	arrObj := &[]models.DoneDocumentUser{}
+	err := a.MySQL.DB.Table("done_document_user").Where("user_id=?", userID).Find(arrObj).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return arrObj, nil
 }

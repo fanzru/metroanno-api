@@ -27,6 +27,7 @@ type ReqCreateFeedback struct {
 }
 
 type ReqCreateQuestionAnnoatations struct {
+	DocumentId             int64                 `json:"document_id" validate:"required"`
 	IsLearningOutcomeShown bool                  `json:"is_learning_outcome_shown" validate:"required"`
 	TimeDuration           int64                 `json:"time_duration" validate:"required"`
 	QuestionAnnoatations   []QuestionAnnoatation `json:"question_annotations" validate:"required"`

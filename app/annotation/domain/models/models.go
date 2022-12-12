@@ -51,3 +51,10 @@ type QuestionAnnotation struct {
 	CreatedAt              time.Time      `json:"created_at" gorm:"created_at"`
 	DeletedAt              gorm.DeletedAt `json:"deleted_at" gorm:"deleted_at"`
 }
+
+type DoneDocumentUser struct {
+	Id         int64 `json:"id" gorm:"id"`
+	UserID     int64 `json:"user_id" gorm:"user_id"`
+	DocumentID int64 `json:"document_id" gorm:"document_id"`
+	Done       bool  `json:"done" gorm:"done"`
+}

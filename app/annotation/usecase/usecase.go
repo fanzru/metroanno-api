@@ -31,5 +31,6 @@ func New(a AnnotationsApp) AnnotationsApp {
 }
 
 var (
-	ErrNotHaveDocuments = errors.New("dont have document to assign")
+	ErrNotHaveDocuments    = errors.New("dont have document to assign")
+	ErrDifferentDocumentID = errors.New("please submit for your document")
 )

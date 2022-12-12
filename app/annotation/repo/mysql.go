@@ -2,12 +2,14 @@ package repo
 
 import (
 	"errors"
+	usersmodel "metroanno-api/app/accounts/domain/models"
 	"metroanno-api/app/annotation/domain/models"
 	"metroanno-api/app/annotation/domain/request"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/infrastructure/database"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 type Impl interface {
@@ -21,6 +23,9 @@ type Impl interface {
 	CreateFeedback(ctx echo.Context, feedback models.Feedback) (*models.Feedback, error)
 	GetDocumentIdByUserId(ctx echo.Context) (int64, error)
 	DeleteDocumentsByID(ctx echo.Context, id int64) (*models.Document, error)
+	BulkInsertQuestionAnnotations(ctx echo.Context, arrQuestionAnnotations []models.QuestionAnnotation) (*[]models.QuestionAnnotation, *gorm.DB, error)
+	UpdateUsersByIdWithTX(ctx echo.Context, docId int64, userID int64, tx *gorm.DB) (*usersmodel.User, *gorm.DB, error)
+	CreateDoneDocumentUser(ctx echo.Context, docId int64, userID int64) error
 }
 
 type AnnotationsRepo struct {

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS done_document_user;

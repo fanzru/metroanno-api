@@ -4,6 +4,7 @@ import (
 	"metroanno-api/app/annotation/domain/models"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 func (a *AnnotationsRepo) CountQuestionAnnotationByDocumentID(ctx echo.Context, documentID int64) (int64, error) {
@@ -33,15 +34,14 @@ func (a *AnnotationsRepo) GetQuestionAnnotationByDocumentID(ctx echo.Context, do
 	return models, nil
 }
 
-func (a *AnnotationsRepo) BulkInsertQuestionAnnotations(ctx echo.Context, arrQuestionAnnotations []models.QuestionAnnotation) (*[]models.QuestionAnnotation, error) {
+func (a *AnnotationsRepo) BulkInsertQuestionAnnotations(ctx echo.Context, arrQuestionAnnotations []models.QuestionAnnotation) (*[]models.QuestionAnnotation, *gorm.DB, error) {
 	tx := a.MySQL.DB.Begin()
 
 	err := tx.Table(TableQuestionAnnotations).CreateInBatches(&arrQuestionAnnotations, 10).Error
 	if err != nil {
 		tx.Rollback()
-		return nil, err
+		return nil, nil, err
 	}
 
-	tx.Commit()
-	return &arrQuestionAnnotations, nil
+	return &arrQuestionAnnotations, tx, nil
 }

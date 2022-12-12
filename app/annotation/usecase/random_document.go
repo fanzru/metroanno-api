@@ -19,6 +19,10 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 	if err != nil {
 		return nil, err
 	}
+	documentDoneUser, err := a.AnnotationsRepo.GetAllDocumentDoneUser(ctx, ID)
+	if err != nil {
+		return nil, err
+	}
 	documents, err := a.AnnotationsRepo.GetAllDocuments(ctx)
 	if err != nil {
 		return nil, err
@@ -28,11 +32,24 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 	newArrDocuments := []models.Document{}
 	for _, doc := range documents {
 		if doc.DoneNumberOfAnnotators != doc.MinNumberOfAnnotators {
-			newArrDocuments = append(newArrDocuments, doc)
+			found := false
+			for _, document := range *documentDoneUser {
+				if document.DocumentID == doc.Id {
+					found = true
+					break
+				}
+			}
+			if !found {
+				newArrDocuments = append(newArrDocuments, doc)
+			}
 		}
 	}
 
 	if len(newArrDocuments) == 0 {
+		_, err = a.AnnotationsRepo.UpdateUsersById(ctx, 0, user.Id)
+		if err != nil {
+			return nil, err
+		}
 		return nil, ErrNotHaveDocuments
 	}
 
