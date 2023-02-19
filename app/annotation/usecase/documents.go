@@ -14,7 +14,7 @@ func (a *AnnotationsApp) AddDocument(ctx echo.Context, param request.ReqAddDocum
 		LearningOutcome:                        param.LearningOutcome,
 		TextDocument:                           param.TextDocument,
 		MinNumberOfQuestionsPerAnnotator:       int64(param.MinNumberOfQuestions),
-		MinNumberOfAnnotators:                  0,
+		MinNumberOfAnnotators:                  int64(param.MinNumberOfAnnotators),
 		CurrentNumberOfAnnotatorsAssigned:      0,
 		CurrentTotalNumberOfQuestionsAnnotated: 0,
 	})

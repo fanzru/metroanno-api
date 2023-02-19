@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"metroanno-api/app/annotation/domain/models"
 	"sort"
 	"strconv"
@@ -27,11 +29,15 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 	if err != nil {
 		return nil, err
 	}
+	log.Println("-------------------------------- TEST")
+	b, _ := json.MarshalIndent(documents, "", "  ")
+	fmt.Println(string(b))
 
 	// remove done document
 	newArrDocuments := []models.Document{}
 	for _, doc := range documents {
 		if doc.DoneNumberOfAnnotators != doc.MinNumberOfAnnotators {
+			log.Println("-------------------------------- TRUE")
 			found := false
 			for _, document := range *documentDoneUser {
 				if document.DocumentID == doc.Id {
@@ -45,6 +51,8 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 		}
 	}
 
+	log.Println("-------------------------------- TEST : ", len(newArrDocuments))
+
 	if len(newArrDocuments) == 0 {
 		_, err = a.AnnotationsRepo.UpdateUsersById(ctx, 0, user.Id)
 		if err != nil {
@@ -52,6 +60,7 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 		}
 		return nil, ErrNotHaveDocuments
 	}
+	log.Println("-------------------------------- TEST")
 
 	// sort by done number of documents
 	sort.SliceStable(newArrDocuments, func(i, j int) bool {
@@ -62,6 +71,8 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println("-------------------------------- TEST")
 
 	return &newArrDocuments[0], nil
 }
