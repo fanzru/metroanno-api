@@ -22,6 +22,8 @@ type Impl interface {
 	UserRegister(ctx echo.Context, param request.UserRegisterReq) error
 	UserLogin(ctx echo.Context, param request.UserLoginReq) (*response.UserLoginRes, error)
 	UserProfile(ctx echo.Context) (*response.ProfileRes, error)
+	UpdateStatusUsers(ctx echo.Context, userID int64, status string) error
+	GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
 }
 
 type AccountsApp struct {
@@ -58,7 +60,7 @@ func (i AccountsApp) UserRegister(ctx echo.Context, param request.UserRegisterRe
 		Age:                       param.Age,
 		NumberOfDocumentAdded:     0,
 		NumberOfQuestionAnnotated: 0,
-		Status:                    "Aman",
+		Status:                    "REGISTERED",
 		Password:                  string(cryptPass),
 		CreatedAt:                 time.Now(),
 	})
@@ -93,7 +95,7 @@ func (i AccountsApp) AdminRegister(ctx echo.Context, param request.UserRegisterR
 		Age:                       param.Age,
 		NumberOfDocumentAdded:     0,
 		NumberOfQuestionAnnotated: 0,
-		Status:                    "Aman",
+		Status:                    "ACTIVED",
 		Password:                  string(cryptPass),
 		CreatedAt:                 time.Now(),
 	})
@@ -107,6 +109,10 @@ func (i AccountsApp) UserLogin(ctx echo.Context, param request.UserLoginReq) (*r
 	user, err := i.AccountsRepo.GetUserByUsername(ctx, param.Username)
 	if err != nil {
 		return nil, err
+	}
+
+	if user.Status != "ACTIVED" {
+		return nil, errs.ErrActivedAccount
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(param.Password))
@@ -159,4 +165,20 @@ func (i AccountsApp) UserProfile(ctx echo.Context) (*response.ProfileRes, error)
 	}
 
 	return resp, nil
+}
+
+func (i AccountsApp) UpdateStatusUsers(ctx echo.Context, userID int64, status string) error {
+	err := i.AccountsRepo.UpdateStatusUsers(ctx, userID, status)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i AccountsApp) GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error) {
+	users, err := i.AccountsRepo.GetAllUserNonAdmin(ctx, pageNumber)
+	if err != nil {
+		return users, err
+	}
+	return users, nil
 }

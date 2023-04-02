@@ -1,10 +1,14 @@
 package http
 
 import (
+	"errors"
+	"fmt"
+	errs "metroanno-api/app/accounts/domain/errors"
 	"metroanno-api/app/accounts/domain/request"
 	accountsapp "metroanno-api/app/accounts/usecase"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/pkg/response"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -93,6 +97,51 @@ func (h *AccountHandler) Login(ctx echo.Context) error {
 
 func (h *AccountHandler) UserProfile(ctx echo.Context) error {
 	r, err := h.AccountsApp.UserProfile(ctx)
+
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	return response.ResponseSuccessOK(ctx, r)
+}
+
+func (h AccountHandler) UpdateStatusUsers(ctx echo.Context) error {
+	req := &request.UpdateStatusUserReq{}
+
+	err := ctx.Bind(req)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+	err = validator.New().Struct(req)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	if !req.ValidateStatus() {
+		return response.ResponseErrorBadRequest(ctx, errors.New("invalid status"))
+	}
+
+	err = h.AccountsApp.UpdateStatusUsers(ctx, req.UserID, req.Status)
+
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	return response.ResponseSuccessOK(ctx, nil)
+}
+func (h AccountHandler) GetAllUserNonAdmin(ctx echo.Context) error {
+	PN := ctx.QueryParam("pageNumber")
+
+	if PN == "" {
+		return response.ResponseErrorBadRequest(ctx, errs.ErrPageNumber)
+	}
+
+	pageNumber, err := strconv.ParseInt(fmt.Sprintf("%v", PN), 10, 64)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	r, err := h.AccountsApp.GetAllUserNonAdmin(ctx, pageNumber)
 
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)

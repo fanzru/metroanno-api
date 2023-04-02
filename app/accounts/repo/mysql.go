@@ -3,6 +3,7 @@ package repo
 import (
 	errs "metroanno-api/app/accounts/domain/errors"
 	"metroanno-api/app/accounts/domain/models"
+	"metroanno-api/app/accounts/domain/response"
 	modelsannotation "metroanno-api/app/annotation/domain/models"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/infrastructure/database"
@@ -16,6 +17,8 @@ type Impl interface {
 	CreateUser(ctx echo.Context, user models.User) (models.User, error)
 	GetUserByID(ctx echo.Context, ID int64) (models.User, error)
 	GetDocumentsById(ctx echo.Context, documentId int64) (*modelsannotation.Document, error)
+	UpdateStatusUsers(ctx echo.Context, userID int64, status string) error
+	GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
 }
 type AccountsRepo struct {
 	MySQL database.Connection
@@ -75,4 +78,64 @@ func (i *AccountsRepo) CreateUser(ctx echo.Context, user models.User) (models.Us
 		return user, result.Error
 	}
 	return user, nil
+}
+
+func (i *AccountsRepo) UpdateStatusUsers(ctx echo.Context, userID int64, status string) error {
+	result := i.MySQL.DB.Table("users").Where("id = ?", userID).UpdateColumn("status", status)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (i *AccountsRepo) GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error) {
+	resp := response.Pagination{}
+	var totalRows int64
+
+	err := i.MySQL.DB.Model(&models.User{}).Where("type = ?", 1).Count(&totalRows).Error
+	if err != nil {
+		return resp, err
+	}
+
+	// calculate page dan offset
+	// contoh halaman yang diminta
+	pageSize := 10 // contoh ukuran halaman
+	offset := (int(pageNumber) - 1) * pageSize
+
+	users := []models.UserWithoutPassword{}
+	result := i.MySQL.DB.Table("users").Where("type = ?", 1).Offset(offset).Limit(pageSize).Find(&users)
+	if result.Error != nil {
+		return resp, result.Error
+	}
+
+	var prevPage, nextPage int64
+	if pageNumber > 1 {
+		prevPage = pageNumber - 1
+	}
+	if int(offset)+len(users) < int(totalRows) {
+		nextPage = pageNumber + 1
+	}
+
+	var totalPages int64
+	if totalRows%int64(pageSize) == 0 {
+		totalPages = totalRows / int64(pageSize)
+	} else {
+		totalPages = (totalRows / int64(pageSize)) + 1
+	}
+
+	var start int64 = 1
+	if totalRows == 0 {
+		start = 0
+	}
+	resp = response.Pagination{
+		Page:  pageNumber,
+		Limit: int64(pageSize),
+		Prev:  prevPage,
+		Next:  nextPage,
+		Start: start,
+		End:   totalPages,
+		Data:  users,
+	}
+
+	return resp, nil
 }

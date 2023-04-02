@@ -28,23 +28,28 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 		})
 	})
 
-	//accounts
+	// admin
+	admingateway := app.Group("/admin")
+	admingateway.POST("/register", h.AccountHandler.RegisterAdmin)
+	admingateway.GET("/users", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AccountHandler.GetAllUserNonAdmin))
+	admingateway.PATCH("/users", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AccountHandler.UpdateStatusUsers))
+
+	// accounts
 	accountsgateway := app.Group("/accounts")
-	accountsgateway.POST("/register/annotator", h.AccountHandler.RegisterUser)
-	accountsgateway.POST("/register/admin", h.AccountHandler.RegisterAdmin)
+	accountsgateway.POST("/register", h.AccountHandler.RegisterUser)
 	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
 	accountsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AccountHandler.UserProfile))
 
-	//documents
+	// documents
 	documentsgateway := app.Group("/documents")
 	documentsgateway.POST("/add", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.AddTheory))
 	documentsgateway.PUT("/edit", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.EditTheory))
 	documentsgateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllDocuments))
 	documentsgateway.GET("/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetDocumentById))
 	documentsgateway.DELETE("/delete/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.DeleteDocumentsByID))
-	documentsgateway.POST("/random-user", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.RandomDocuments))
+	documentsgateway.GET("/random-user", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.RandomDocuments))
 
-	//question-type
+	// question-type
 	questiongateway := app.Group("/question-type")
 	questiongateway.POST("/create", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.AddQuestionsTypes))
 	questiongateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllQuestionsTypes))

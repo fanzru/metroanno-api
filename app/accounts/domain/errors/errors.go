@@ -15,6 +15,8 @@ var (
 	// Mailer Error
 	ErrEmailNotSend = errors.New("email not send")
 
+	ErrPageNumber     = errors.New("please fill page number")
+	ErrActivedAccount = errors.New("please contact admin to actived your account")
 	// Usecase Error
 	ErrInvalidParam = errors.New("invalid parameter")
 
@@ -32,4 +34,7 @@ var (
 
 	// Limiter
 	ErrManyWrongPassword = errors.New("your account has too many wrong passwords, please try again in 5 minutes")
+
+	// Not Admin
+	ErrNotAdmin = errors.New("your account is not admin")
 )
