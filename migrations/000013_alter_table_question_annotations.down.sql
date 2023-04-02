@@ -1,0 +1,2 @@
+ALTER TABLE question_annotations
+DROP COLUMN is_checked_admin;

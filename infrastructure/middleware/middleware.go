@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"metroanno-api/app/accounts/domain/models"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/infrastructure/database"
 	"metroanno-api/pkg/jwt"
@@ -32,6 +33,16 @@ func (m MiddlewareAuth) BearerTokenMiddlewareAdmin(next echo.HandlerFunc) echo.H
 		if typeUser != 2 {
 			return response.ResponseErrorUnauthorized(ctx)
 		}
+
+		modelsUser := models.UserWithoutPassword{}
+		err := m.DB.DB.Table("users").Where("user_id = ?", userId).First(&modelsUser)
+		if err != nil {
+			return response.ResponseErrorUnauthorized(ctx)
+		}
+
+		if modelsUser.Status != "ACTIVED" {
+			return response.ResponseErrorUnauthorized(ctx)
+		}
 		return next(ctx)
 	}
 }
@@ -41,6 +52,17 @@ func (m MiddlewareAuth) BearerTokenMiddleware(next echo.HandlerFunc) echo.Handle
 		if userId == 0 {
 			return response.ResponseErrorUnauthorized(ctx)
 		}
+
+		modelsUser := models.UserWithoutPassword{}
+		err := m.DB.DB.Table("users").Where("user_id = ?", userId).First(&modelsUser)
+		if err != nil {
+			return response.ResponseErrorUnauthorized(ctx)
+		}
+
+		if modelsUser.Status != "ACTIVED" {
+			return response.ResponseErrorUnauthorized(ctx)
+		}
+
 		return next(ctx)
 	}
 }
