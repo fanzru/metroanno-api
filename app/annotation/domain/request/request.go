@@ -27,6 +27,16 @@ type ReqCreateFeedback struct {
 	FeedbackText string `json:"feedback_text" validate:"required"`
 }
 
+type ReqUpdateDocument struct {
+	DocumentID int64 `json:"document_id" validate:"required"`
+	IsApproved bool  `json:"is_approved" validate:"required"`
+}
+
+type ReqCheckedQuestion struct {
+	QuestionID int64 `json:"question_id" validate:"required"`
+	IsChecked  bool  `json:"is_checked" validate:"required"`
+}
+
 type ReqCreateQuestionAnnoatations struct {
 	DocumentId             int64                 `json:"document_id" validate:"required"`
 	IsLearningOutcomeShown bool                  `json:"is_learning_outcome_shown" validate:"required"`

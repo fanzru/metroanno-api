@@ -1,7 +1,6 @@
 package http
 
 import (
-	"log"
 	"metroanno-api/app/annotation/domain/request"
 	"metroanno-api/pkg/response"
 	"strconv"
@@ -84,7 +83,6 @@ func (h *AnnotationHandler) DeleteDocumentsByID(ctx echo.Context) error {
 }
 
 func (h *AnnotationHandler) RandomDocuments(ctx echo.Context) error {
-	log.Println("-------------------------------- 1")
 	document, err := h.App.RandomDocuments(ctx)
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)

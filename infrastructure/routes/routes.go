@@ -33,6 +33,9 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	admingateway.POST("/register", h.AccountHandler.RegisterAdmin)
 	admingateway.GET("/users", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AccountHandler.GetAllUserNonAdmin))
 	admingateway.PATCH("/users", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AccountHandler.UpdateStatusUsers))
+	admingateway.GET("/documents", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AnnotationsHandler.GetAllDocumentsAdmin))
+	admingateway.PATCH("/documents", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AnnotationsHandler.UpdateIsAprrovedDocument))
+	admingateway.PATCH("/question", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AnnotationsHandler.UpdateIsCheckedAdminQuestionAnnotations))
 
 	// accounts
 	accountsgateway := app.Group("/accounts")
