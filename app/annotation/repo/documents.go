@@ -36,6 +36,15 @@ func (a *AnnotationsRepo) GetAllDocuments(ctx echo.Context) ([]models.Document, 
 	return document, nil
 }
 
+func (a *AnnotationsRepo) GetAllDocumentsWithWhere(ctx echo.Context) ([]models.Document, error) {
+	document := []models.Document{}
+	err := a.MySQL.DB.Table("documents").Where("is_approved = ?", true).Find(&document).Error
+	if err != nil {
+		return nil, err
+	}
+	return document, nil
+}
+
 func (a *AnnotationsRepo) UpdateDocumentsById(ctx echo.Context, param request.ReqEditDocument) (*models.Document, error) {
 	documentfind := &models.Document{}
 	err := a.MySQL.DB.Table("documents").Where("id=?", param.DocumentId).First(documentfind).Error
@@ -119,7 +128,7 @@ func (a *AnnotationsRepo) DeleteDocumentsByID(ctx echo.Context, id int64) (*mode
 
 func (a *AnnotationsRepo) GetAllDocumentDoneUser(ctx echo.Context, userID int64) (*[]models.DoneDocumentUser, error) {
 	arrObj := &[]models.DoneDocumentUser{}
-	err := a.MySQL.DB.Table("done_document_user").Where("user_id=?", userID).Find(arrObj).Error
+	err := a.MySQL.DB.Table("done_document_user").Where("user_id = ?", userID).Find(arrObj).Error
 	if err != nil {
 		return nil, err
 	}

@@ -82,7 +82,7 @@ func (a *AnnotationsApp) BulkInsertQuestionAnnotations(ctx echo.Context, param r
 		tx.Rollback()
 		return nil, err
 	}
-	documents, err := a.AnnotationsRepo.GetAllDocuments(ctx)
+	documents, err := a.AnnotationsRepo.GetAllDocumentsWithWhere(ctx)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
