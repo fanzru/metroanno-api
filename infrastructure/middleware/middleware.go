@@ -35,7 +35,7 @@ func (m MiddlewareAuth) BearerTokenMiddlewareAdmin(next echo.HandlerFunc) echo.H
 		}
 
 		modelsUser := models.UserWithoutPassword{}
-		err := m.DB.DB.Table("users").Where("user_id = ?", userId).First(&modelsUser)
+		err := m.DB.DB.Table("users").Where("id = ?", userId).First(&modelsUser).Error
 		if err != nil {
 			return response.ResponseErrorUnauthorized(ctx)
 		}
@@ -54,7 +54,7 @@ func (m MiddlewareAuth) BearerTokenMiddleware(next echo.HandlerFunc) echo.Handle
 		}
 
 		modelsUser := models.UserWithoutPassword{}
-		err := m.DB.DB.Table("users").Where("user_id = ?", userId).First(&modelsUser)
+		err := m.DB.DB.Table("users").Where("id = ?", userId).First(&modelsUser).Error
 		if err != nil {
 			return response.ResponseErrorUnauthorized(ctx)
 		}
@@ -67,7 +67,7 @@ func (m MiddlewareAuth) BearerTokenMiddleware(next echo.HandlerFunc) echo.Handle
 	}
 }
 
-func (m MiddlewareAuth) getUserIdAndTypeFromJWT(ctx echo.Context) (int, uint64) {
+func (m MiddlewareAuth) getUserIdAndTypeFromJWT(ctx echo.Context) (int64, uint64) {
 	authHeader := ctx.Request().Header.Get("Authorization")
 	if authHeader == "" {
 		return 0, 0
@@ -90,5 +90,5 @@ func (m MiddlewareAuth) getUserIdAndTypeFromJWT(ctx echo.Context) (int, uint64) 
 	// Bind UserID to context
 	ctx.Set("user_id", claims.UserId)
 	ctx.Set("usernamel", claims.Username)
-	return 1, claims.Type
+	return claims.UserId, claims.Type
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"metroanno-api/app/annotation/domain/models"
 	"metroanno-api/app/annotation/domain/request"
+	"metroanno-api/app/annotation/domain/response"
 	"metroanno-api/app/annotation/repo"
 	"metroanno-api/infrastructure/config"
 
@@ -19,6 +20,9 @@ type Impl interface {
 	CreateQuestionTypes(ctx echo.Context, param request.ReqAddQuestionType) (*models.QuestionType, error)
 	DeleteQuestionTypes(ctx echo.Context, id int64) (*models.QuestionType, error)
 	RandomDocuments(ctx echo.Context) (int64, error)
+	GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
+	UpdateIsAprrovedDocument(ctx echo.Context, documentID int64, isApproved bool) error
+	UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error
 }
 
 type AnnotationsApp struct {

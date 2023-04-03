@@ -45,3 +45,11 @@ func (a *AnnotationsRepo) BulkInsertQuestionAnnotations(ctx echo.Context, arrQue
 
 	return &arrQuestionAnnotations, tx, nil
 }
+
+func (i *AnnotationsRepo) UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error {
+	err := i.MySQL.DB.Table("question_annotations").Where("id = ?", id).Update("is_checked_admin", isChecked).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

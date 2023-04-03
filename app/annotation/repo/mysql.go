@@ -5,6 +5,7 @@ import (
 	usersmodel "metroanno-api/app/accounts/domain/models"
 	"metroanno-api/app/annotation/domain/models"
 	"metroanno-api/app/annotation/domain/request"
+	"metroanno-api/app/annotation/domain/response"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/infrastructure/database"
 
@@ -26,6 +27,9 @@ type Impl interface {
 	BulkInsertQuestionAnnotations(ctx echo.Context, arrQuestionAnnotations []models.QuestionAnnotation) (*[]models.QuestionAnnotation, *gorm.DB, error)
 	UpdateUsersByIdWithTX(ctx echo.Context, docId int64, userID int64, tx *gorm.DB) (*usersmodel.User, *gorm.DB, error)
 	CreateDoneDocumentUser(ctx echo.Context, docId int64, userID int64) error
+	GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
+	UpdateIsAprrovedDocument(ctx echo.Context, documentID int64, isApproved bool) error
+	UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error
 }
 
 type AnnotationsRepo struct {

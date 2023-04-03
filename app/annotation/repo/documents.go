@@ -4,6 +4,7 @@ import (
 	accountsModel "metroanno-api/app/accounts/domain/models"
 	"metroanno-api/app/annotation/domain/models"
 	"metroanno-api/app/annotation/domain/request"
+	"metroanno-api/app/annotation/domain/response"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -124,4 +125,64 @@ func (a *AnnotationsRepo) GetAllDocumentDoneUser(ctx echo.Context, userID int64)
 	}
 
 	return arrObj, nil
+}
+
+func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error) {
+	resp := response.Pagination{}
+	var totalRows int64
+
+	err := i.MySQL.DB.Model(&models.Document{}).Count(&totalRows).Error
+	if err != nil {
+		return resp, err
+	}
+
+	// calculate page dan offset
+	// contoh halaman yang diminta
+	pageSize := 10 // contoh ukuran halaman
+	offset := (int(pageNumber) - 1) * pageSize
+
+	documents := []models.Document{}
+	result := i.MySQL.DB.Set("gorm:auto_preload", true).Model(&models.Document{}).Offset(offset).Limit(pageSize).Preload("QuestionAnnotations").Find(&documents)
+	if result.Error != nil {
+		return resp, result.Error
+	}
+
+	var prevPage, nextPage int64
+	if pageNumber > 1 {
+		prevPage = pageNumber - 1
+	}
+	if int(offset)+len(documents) < int(totalRows) {
+		nextPage = pageNumber + 1
+	}
+
+	var totalPages int64
+	if totalRows%int64(pageSize) == 0 {
+		totalPages = totalRows / int64(pageSize)
+	} else {
+		totalPages = (totalRows / int64(pageSize)) + 1
+	}
+
+	var start int64 = 1
+	if totalRows == 0 {
+		start = 0
+	}
+	resp = response.Pagination{
+		Page:  pageNumber,
+		Limit: int64(pageSize),
+		Prev:  prevPage,
+		Next:  nextPage,
+		Start: start,
+		End:   totalPages,
+		Data:  documents,
+	}
+
+	return resp, nil
+}
+
+func (i *AnnotationsRepo) UpdateIsAprrovedDocument(ctx echo.Context, documentID int64, isApproved bool) error {
+	err := i.MySQL.DB.Table("documents").Where("id = ?", documentID).Update("is_approved", isApproved).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

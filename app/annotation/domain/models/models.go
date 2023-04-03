@@ -16,8 +16,11 @@ type Document struct {
 	MinNumberOfQuestionsPerAnnotator       int64          `json:"min_number_of_questions_per_annotator" gorm:"min_number_of_questions_per_annotator"`
 	CurrentTotalNumberOfQuestionsAnnotated int64          `json:"current_total_number_of_questions_annotated" gorm:"current_total_number_of_questions_annotated"`
 	DoneNumberOfAnnotators                 int64          `json:"done_number_of_annotators"`
+	IsApproved                             bool           `json:"is_approved" gorm:"is_approved"`
 	CreatedAt                              time.Time      `json:"created_at" gorm:"created_at"`
 	DeletedAt                              gorm.DeletedAt `json:"deleted_at" gorm:"deleted_at"`
+
+	QuestionAnnotations []*QuestionAnnotation `json:"question_annotations" gorm:"foreignKey:document_id;"`
 }
 
 type QuestionType struct {
@@ -48,8 +51,11 @@ type QuestionAnnotation struct {
 	QuestionText           string         `json:"question_text" gorm:"question_text"`
 	AnswerText             string         `json:"answer_text" gorm:"answer_text"`
 	TimeDuration           int64          `json:"time_duration" gorm:"time_duration"`
+	IsCheckedAdmin         bool           `json:"is_checked_admin" gorm:"is_checked_admin"`
 	CreatedAt              time.Time      `json:"created_at" gorm:"created_at"`
 	DeletedAt              gorm.DeletedAt `json:"deleted_at" gorm:"deleted_at"`
+
+	//Document Document `json:"-"`
 }
 
 type DoneDocumentUser struct {
