@@ -19,6 +19,7 @@ type Document struct {
 	IsApproved                             bool           `json:"is_approved" gorm:"is_approved"`
 	CreatedAt                              time.Time      `json:"created_at" gorm:"created_at"`
 	DeletedAt                              gorm.DeletedAt `json:"deleted_at" gorm:"deleted_at"`
+	CreatedByUserId                        int64          `json:"created_by_user_id" gorm:"created_by_user_id"`
 
 	QuestionAnnotations []*QuestionAnnotation `json:"question_annotations" gorm:"foreignKey:document_id;"`
 }

@@ -20,7 +20,16 @@ func (a *AnnotationsRepo) CreateTheory(ctx echo.Context, document models.Documen
 
 func (a *AnnotationsRepo) GetDocumentsById(ctx echo.Context, documentId int64) (*models.Document, error) {
 	document := &models.Document{}
-	err := a.MySQL.DB.Table("documents").Where("id = ?", documentId).First(&document).Error
+	err := a.MySQL.DB.Table("documents").Where("id = ?", documentId).Preload("QuestionAnnotations").First(&document).Error
+	if err != nil {
+		return nil, err
+	}
+	return document, nil
+}
+
+func (a *AnnotationsRepo) GetDocumentsByCreatedBy(ctx echo.Context, userID int64) ([]models.Document, error) {
+	document := []models.Document{}
+	err := a.MySQL.DB.Table("documents").Where("created_by_user_id = ?", userID).Preload("QuestionAnnotations").Find(&document).Error
 	if err != nil {
 		return nil, err
 	}

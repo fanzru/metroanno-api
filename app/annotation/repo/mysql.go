@@ -31,6 +31,7 @@ type Impl interface {
 	UpdateIsAprrovedDocument(ctx echo.Context, documentID int64, isApproved bool) error
 	UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error
 	GetAllDocumentsWithWhere(ctx echo.Context) ([]models.Document, error)
+	GetDocumentsByCreatedBy(ctx echo.Context, userID int64) ([]models.Document, error)
 }
 
 type AnnotationsRepo struct {

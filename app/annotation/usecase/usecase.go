@@ -23,6 +23,7 @@ type Impl interface {
 	GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
 	UpdateIsAprrovedDocument(ctx echo.Context, documentID int64, isApproved bool) error
 	UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error
+	GetDocumentsByCreatedBy(ctx echo.Context) ([]models.Document, error)
 }
 
 type AnnotationsApp struct {

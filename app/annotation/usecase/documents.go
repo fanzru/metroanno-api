@@ -1,14 +1,21 @@
 package usecase
 
 import (
+	"fmt"
 	"metroanno-api/app/annotation/domain/models"
 	"metroanno-api/app/annotation/domain/request"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 func (a *AnnotationsApp) AddDocument(ctx echo.Context, param request.ReqAddDocument) error {
-	err := a.AnnotationsRepo.CreateTheory(ctx, models.Document{
+	userID, err := strconv.ParseInt(fmt.Sprintf("%v", ctx.Get("user_id")), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	err = a.AnnotationsRepo.CreateTheory(ctx, models.Document{
 		Id:                                     0,
 		SubjectId:                              param.SubjectId,
 		LearningOutcome:                        param.LearningOutcome,
@@ -17,6 +24,7 @@ func (a *AnnotationsApp) AddDocument(ctx echo.Context, param request.ReqAddDocum
 		MinNumberOfAnnotators:                  int64(param.MinNumberOfAnnotators),
 		CurrentNumberOfAnnotatorsAssigned:      0,
 		CurrentTotalNumberOfQuestionsAnnotated: 0,
+		CreatedByUserId:                        userID,
 	})
 	if err != nil {
 		return err
@@ -31,6 +39,20 @@ func (a *AnnotationsApp) GetDocumentsById(ctx echo.Context, documentId int64) (*
 	}
 
 	return document, nil
+}
+
+func (a *AnnotationsApp) GetDocumentsByCreatedBy(ctx echo.Context) ([]models.Document, error) {
+	userID, err := strconv.ParseInt(fmt.Sprintf("%v", ctx.Get("user_id")), 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	documents, err := a.AnnotationsRepo.GetDocumentsByCreatedBy(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return documents, nil
 }
 
 func (a *AnnotationsApp) GetAllDocuments(ctx echo.Context) ([]models.Document, error) {

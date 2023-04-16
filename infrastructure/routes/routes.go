@@ -51,6 +51,7 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	documentsgateway.GET("/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetDocumentById))
 	documentsgateway.DELETE("/delete/:id", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.DeleteDocumentsByID))
 	documentsgateway.GET("/random-user", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.RandomDocuments))
+	documentsgateway.GET("/added", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllDocumentsByCreatedBy))
 
 	// question-type
 	questiongateway := app.Group("/question-type")
