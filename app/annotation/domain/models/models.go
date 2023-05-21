@@ -65,3 +65,8 @@ type DoneDocumentUser struct {
 	DocumentID int64 `json:"document_id" gorm:"document_id"`
 	Done       bool  `json:"done" gorm:"done"`
 }
+
+type Subject struct {
+	Id          int64  `json:"id" gorm:"id"`
+	SubjectText string `json:"subject_text"`
+}

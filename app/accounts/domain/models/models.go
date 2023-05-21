@@ -23,6 +23,7 @@ type User struct {
 	CreatedAt                 time.Time   `json:"created_at" gorm:"created_at"`
 	DeletedAt                 null.Time   `json:"deleted_at" gorm:"deleted_at"`
 }
+
 type UserWithoutPassword struct {
 	Id                        int64       `json:"id" gorm:"id"`
 	Type                      uint64      `json:"type" gorm:"type"`
@@ -38,4 +39,6 @@ type UserWithoutPassword struct {
 	CurrentDocumentID         int64       `json:"current_document_id" gorm:"current_document_id"`
 	CreatedAt                 time.Time   `json:"created_at" gorm:"created_at"`
 	DeletedAt                 null.Time   `json:"deleted_at" gorm:"deleted_at"`
+	TotalQuestionCheckedAdmin int64       `json:"total_question_checked_admin"`
+	TotalQuestion             int64       `json:"total_question_non_checked_admin"`
 }
