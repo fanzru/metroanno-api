@@ -43,6 +43,10 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
 	accountsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AccountHandler.UserProfile))
 
+	// subject
+	subjectgateway := app.Group("/subject")
+	subjectgateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllSubjects))
+
 	// documents
 	documentsgateway := app.Group("/documents")
 	documentsgateway.POST("/add", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.AddTheory))

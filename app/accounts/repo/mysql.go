@@ -108,6 +108,22 @@ func (i *AccountsRepo) GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (r
 		return resp, result.Error
 	}
 
+	for _, user := range users {
+		var totalAllChecked, totalAll int64
+
+		err := i.MySQL.DB.Table("question_annotations").Where("user_id = ?", user.Id).Count(&totalAll).Error
+		if err != nil {
+			return resp, err
+		}
+		err = i.MySQL.DB.Table("question_annotations").Where("user_id = ? AND is_checked_admin = ?", user.Id, true).Count(&totalAllChecked).Error
+		if err != nil {
+			return resp, err
+		}
+
+		user.TotalQuestionCheckedAdmin = totalAllChecked
+		user.TotalQuestion = totalAll
+
+	}
 	var prevPage, nextPage int64
 	if pageNumber > 1 {
 		prevPage = pageNumber - 1
