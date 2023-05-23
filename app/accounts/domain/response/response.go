@@ -31,11 +31,11 @@ type UserRes struct {
 }
 
 type Pagination struct {
-	Page  int64                        `json:"page"`
-	Limit int64                        `json:"limit"`
-	Prev  int64                        `json:"prev"`
-	Next  int64                        `json:"next"`
-	Start int64                        `json:"start"`
-	End   int64                        `json:"end"`
-	Data  []models.UserWithoutPassword `json:"data"`
+	Page  int64                         `json:"page"`
+	Limit int64                         `json:"limit"`
+	Prev  int64                         `json:"prev"`
+	Next  int64                         `json:"next"`
+	Start int64                         `json:"start"`
+	End   int64                         `json:"end"`
+	Data  []*models.UserWithoutPassword `json:"data"`
 }
