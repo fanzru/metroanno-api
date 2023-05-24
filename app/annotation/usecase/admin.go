@@ -29,3 +29,11 @@ func (a *AnnotationsApp) UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Contex
 	}
 	return nil
 }
+
+func (a *AnnotationsApp) MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool) error {
+	err := a.AnnotationsRepo.MarkQuestionAnnotations(ctx, ids, mark)
+	if err != nil {
+		return err
+	}
+	return nil
+}

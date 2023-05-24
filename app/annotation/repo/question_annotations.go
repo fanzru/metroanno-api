@@ -53,3 +53,11 @@ func (i *AnnotationsRepo) UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Conte
 	}
 	return nil
 }
+
+func (i *AnnotationsRepo) MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool) error {
+	err := i.MySQL.DB.Table("question_annotations").Where("id IN ?", ids).Update("mark", mark).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

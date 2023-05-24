@@ -102,7 +102,7 @@ func (i *AccountsRepo) GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (r
 	pageSize := 10 // contoh ukuran halaman
 	offset := (int(pageNumber) - 1) * pageSize
 
-	users := []models.UserWithoutPassword{}
+	users := []*models.UserWithoutPassword{}
 	result := i.MySQL.DB.Table("users").Where("type = ?", 1).Offset(offset).Limit(pageSize).Find(&users)
 	if result.Error != nil {
 		return resp, result.Error
@@ -115,7 +115,8 @@ func (i *AccountsRepo) GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (r
 		if err != nil {
 			return resp, err
 		}
-		err = i.MySQL.DB.Table("question_annotations").Where("user_id = ? AND is_checked_admin = ?", user.Id, true).Count(&totalAllChecked).Error
+
+		err = i.MySQL.DB.Table("question_annotations").Where("user_id = ? AND is_checked_admin = ?", user.Id, 1).Count(&totalAllChecked).Error
 		if err != nil {
 			return resp, err
 		}

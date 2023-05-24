@@ -1,8 +1,6 @@
 package request
 
-import (
-	"github.com/volatiletech/null/v9"
-)
+import "github.com/volatiletech/null/v9"
 
 type UserRegisterReq struct {
 	SubjectPreference null.String `json:"subject_preference" gorm:"subject_preference"`
