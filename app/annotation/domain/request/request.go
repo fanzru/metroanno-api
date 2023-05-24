@@ -36,6 +36,10 @@ type ReqCheckedQuestion struct {
 	QuestionID int64 `json:"question_id" validate:"required"`
 	IsChecked  bool  `json:"is_checked" validate:"required"`
 }
+type ReqMarkQuestion struct {
+	QuestionIDs []int64 `json:"question_ids" validate:"required"`
+	Mark        bool    `json:"mark" validate:"required"`
+}
 
 type ReqCreateQuestionAnnoatations struct {
 	DocumentId             int64                 `json:"document_id" validate:"required"`

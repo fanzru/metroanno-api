@@ -25,6 +25,7 @@ type Impl interface {
 	UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Context, id int64, isChecked bool) error
 	GetDocumentsByCreatedBy(ctx echo.Context) ([]models.Document, error)
 	GetAllSubject(ctx echo.Context) ([]models.Subject, error)
+	MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool) error
 }
 
 type AnnotationsApp struct {

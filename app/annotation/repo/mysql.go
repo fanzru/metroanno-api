@@ -33,6 +33,7 @@ type Impl interface {
 	GetAllDocumentsWithWhere(ctx echo.Context) ([]models.Document, error)
 	GetDocumentsByCreatedBy(ctx echo.Context, userID int64) ([]models.Document, error)
 	GetAllSubject(ctx echo.Context) ([]models.Subject, error)
+	MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool)
 }
 
 type AnnotationsRepo struct {

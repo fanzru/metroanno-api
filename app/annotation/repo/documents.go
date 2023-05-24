@@ -159,10 +159,19 @@ func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int6
 	pageSize := 10 // contoh ukuran halaman
 	offset := (int(pageNumber) - 1) * pageSize
 
-	documents := []models.Document{}
+	documents := []*models.Document{}
 	result := i.MySQL.DB.Set("gorm:auto_preload", true).Model(&models.Document{}).Offset(offset).Limit(pageSize).Preload("QuestionAnnotations").Find(&documents)
 	if result.Error != nil {
 		return resp, result.Error
+	}
+
+	for _, doc := range documents {
+		var count int64
+		result := i.MySQL.DB.Model(&models.QuestionAnnotation{}).Where("document_id = ? AND mark = ?", doc.Id, false).Count(&count)
+		if result.Error != nil {
+			return resp, result.Error
+		}
+		doc.UnreadQuestions = count
 	}
 
 	var prevPage, nextPage int64

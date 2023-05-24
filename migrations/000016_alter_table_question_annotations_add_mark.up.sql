@@ -1,0 +1,2 @@
+ALTER TABLE question_annotations
+ADD COLUMN mark BOOLEAN DEFAULT FALSE;

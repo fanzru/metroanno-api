@@ -71,3 +71,23 @@ func (h *AnnotationHandler) UpdateIsCheckedAdminQuestionAnnotations(ctx echo.Con
 
 	return response.ResponseSuccessOK(ctx, nil)
 }
+
+func (h *AnnotationHandler) MarkQuestionAnnotations(ctx echo.Context) error {
+	requestBody := request.ReqMarkQuestion{}
+	err := ctx.Bind(&requestBody)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	err = validator.New().Struct(requestBody)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	err = h.App.MarkQuestionAnnotations(ctx, requestBody.QuestionIDs, requestBody.Mark)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	return response.ResponseSuccessOK(ctx, nil)
+}
