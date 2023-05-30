@@ -34,7 +34,7 @@ type ReqUpdateDocument struct {
 
 type ReqCheckedQuestion struct {
 	QuestionID int64 `json:"question_id" validate:"required"`
-	IsChecked  bool  `json:"is_checked" validate:"required"`
+	IsChecked  bool  `json:"is_checked"`
 }
 type ReqMarkQuestion struct {
 	QuestionIDs []int64 `json:"question_ids" validate:"required"`
