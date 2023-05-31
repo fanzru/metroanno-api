@@ -45,7 +45,7 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 
 	// subject
 	subjectgateway := app.Group("/subject")
-	subjectgateway.GET("/", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllSubjects))
+	subjectgateway.GET("/", h.AnnotationsHandler.GetAllSubjects)
 
 	// documents
 	documentsgateway := app.Group("/documents")

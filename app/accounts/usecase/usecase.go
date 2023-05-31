@@ -49,12 +49,17 @@ func (i AccountsApp) UserRegister(ctx echo.Context, param request.UserRegisterRe
 		return err
 	}
 
+	usersubject := []*models.UsersSubjects{}
+	for _, v := range param.SubjectIds {
+		usersubject = append(usersubject, &models.UsersSubjects{
+			SubjectId: v,
+		})
+	}
 	_, err = i.AccountsRepo.CreateUser(ctx, models.User{
 		Id:                        0,
 		Type:                      1,    // type 1 user not admin
 		IsDocumentAnnotator:       true, // default true ?
 		IsQuestionAnnotator:       true, // default true ?
-		SubjectPreference:         param.SubjectPreference,
 		Username:                  param.Username,
 		Contact:                   param.Contact,
 		Age:                       param.Age,
@@ -63,10 +68,11 @@ func (i AccountsApp) UserRegister(ctx echo.Context, param request.UserRegisterRe
 		Status:                    "REGISTERED",
 		Password:                  string(cryptPass),
 		CreatedAt:                 time.Now(),
-	})
+	}, usersubject)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -84,12 +90,18 @@ func (i AccountsApp) AdminRegister(ctx echo.Context, param request.UserRegisterR
 		return err
 	}
 
+	usersubject := []*models.UsersSubjects{}
+	for _, v := range param.SubjectIds {
+		usersubject = append(usersubject, &models.UsersSubjects{
+			SubjectId: v,
+		})
+	}
+
 	_, err = i.AccountsRepo.CreateUser(ctx, models.User{
 		Id:                        0,
 		Type:                      2,    // type 2 admin
 		IsDocumentAnnotator:       true, // default true ?
 		IsQuestionAnnotator:       true, // default true ?
-		SubjectPreference:         param.SubjectPreference,
 		Username:                  param.Username,
 		Contact:                   param.Contact,
 		Age:                       param.Age,
@@ -98,7 +110,7 @@ func (i AccountsApp) AdminRegister(ctx echo.Context, param request.UserRegisterR
 		Status:                    "ACTIVED",
 		Password:                  string(cryptPass),
 		CreatedAt:                 time.Now(),
-	})
+	}, usersubject)
 	if err != nil {
 		return err
 	}
@@ -152,7 +164,6 @@ func (i AccountsApp) UserProfile(ctx echo.Context) (*response.ProfileRes, error)
 			Type:                      user.Type,
 			IsDocumentAnnotator:       user.IsDocumentAnnotator,
 			IsQuestionAnnotator:       user.IsQuestionAnnotator,
-			SubjectPreference:         user.SubjectPreference,
 			Username:                  user.Username,
 			Contact:                   user.Contact,
 			Age:                       user.Age,

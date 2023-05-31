@@ -19,11 +19,23 @@ func (a *AnnotationsApp) RandomDocuments(ctx echo.Context) (*models.Document, er
 	if err != nil {
 		return nil, err
 	}
+
+	usersSubjects, err := a.AnnotationsRepo.GetAllUsersSubjectWithUserId(ctx, user.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	subjectIds := []int64{}
+	for _, us := range usersSubjects {
+		subjectIds = append(subjectIds, us.SubjectId)
+	}
+
 	documentDoneUser, err := a.AnnotationsRepo.GetAllDocumentDoneUser(ctx, ID)
 	if err != nil {
 		return nil, err
 	}
-	documents, err := a.AnnotationsRepo.GetAllDocumentsWithWhere(ctx)
+
+	documents, err := a.AnnotationsRepo.GetAllDocumentsWithWhereSubjects(ctx, subjectIds)
 	if err != nil {
 		return nil, err
 	}

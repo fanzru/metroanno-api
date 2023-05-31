@@ -54,6 +54,15 @@ func (a *AnnotationsRepo) GetAllDocumentsWithWhere(ctx echo.Context) ([]models.D
 	return document, nil
 }
 
+func (a *AnnotationsRepo) GetAllDocumentsWithWhereSubjects(ctx echo.Context, subjectIds []int64) ([]models.Document, error) {
+	document := []models.Document{}
+	err := a.MySQL.DB.Table("documents").Where("is_approved = ? AND subject_id IN ?", true, subjectIds).Find(&document).Error
+	if err != nil {
+		return nil, err
+	}
+	return document, nil
+}
+
 func (a *AnnotationsRepo) UpdateDocumentsById(ctx echo.Context, param request.ReqEditDocument) (*models.Document, error) {
 	documentfind := &models.Document{}
 	err := a.MySQL.DB.Table("documents").Where("id=?", param.DocumentId).First(documentfind).Error

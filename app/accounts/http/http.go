@@ -32,11 +32,11 @@ func (h AccountHandler) RegisterUser(ctx echo.Context) error {
 	}
 
 	err = h.AccountsApp.UserRegister(ctx, request.UserRegisterReq{
-		Username:          userRegisterReq.Username,
-		Password:          userRegisterReq.Password,
-		SubjectPreference: userRegisterReq.SubjectPreference,
-		Contact:           userRegisterReq.Contact,
-		Age:               userRegisterReq.Age,
+		Username:   userRegisterReq.Username,
+		Password:   userRegisterReq.Password,
+		Contact:    userRegisterReq.Contact,
+		Age:        userRegisterReq.Age,
+		SubjectIds: userRegisterReq.SubjectIds,
 	})
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)
@@ -58,11 +58,11 @@ func (h AccountHandler) RegisterAdmin(ctx echo.Context) error {
 	}
 
 	err = h.AccountsApp.AdminRegister(ctx, request.UserRegisterReq{
-		Username:          userRegisterReq.Username,
-		Password:          userRegisterReq.Password,
-		SubjectPreference: userRegisterReq.SubjectPreference,
-		Contact:           userRegisterReq.Contact,
-		Age:               userRegisterReq.Age,
+		Username:   userRegisterReq.Username,
+		Password:   userRegisterReq.Password,
+		Contact:    userRegisterReq.Contact,
+		Age:        userRegisterReq.Age,
+		SubjectIds: userRegisterReq.SubjectIds,
 	})
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)
