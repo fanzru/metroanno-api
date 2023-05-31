@@ -19,6 +19,7 @@ type Impl interface {
 	GetDocumentsById(ctx echo.Context, documentId int64) (*modelsannotation.Document, error)
 	UpdateStatusUsers(ctx echo.Context, userID int64, status string) error
 	GetAllUserNonAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error)
+	CreateUsersSubjects(ctx echo.Context, usersSubjects []*models.UsersSubjects) ([]*models.UsersSubjects, error)
 }
 type AccountsRepo struct {
 	MySQL database.Connection
@@ -72,12 +73,33 @@ func (a *AccountsRepo) GetDocumentsById(ctx echo.Context, documentId int64) (*mo
 	return document, nil
 }
 
-func (i *AccountsRepo) CreateUser(ctx echo.Context, user models.User) (models.User, error) {
-	result := i.MySQL.DB.Table("users").Create(&user)
+func (i *AccountsRepo) CreateUser(ctx echo.Context, user models.User, us []*models.UsersSubjects) (models.User, error) {
+	tx := i.MySQL.DB.Begin()
+	result := tx.Table("users").Create(&user)
 	if result.Error != nil {
+		tx.Rollback()
 		return user, result.Error
 	}
+	for _, v := range us {
+		v.UserId = user.Id
+	}
+
+	result = tx.Table("users_subjects").CreateInBatches(&us, 10)
+	if result.Error != nil {
+		tx.Rollback()
+		return user, result.Error
+	}
+
+	tx.Commit()
 	return user, nil
+}
+
+func (i *AccountsRepo) CreateUsersSubjects(ctx echo.Context, usersSubjects []*models.UsersSubjects) ([]*models.UsersSubjects, error) {
+	result := i.MySQL.DB.Table("users_subjects").CreateInBatches(&usersSubjects, 10)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return usersSubjects, nil
 }
 
 func (i *AccountsRepo) UpdateStatusUsers(ctx echo.Context, userID int64, status string) error {
