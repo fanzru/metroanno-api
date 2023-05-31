@@ -168,7 +168,7 @@ func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int6
 	pageSize := 10 // contoh ukuran halaman
 	offset := (int(pageNumber) - 1) * pageSize
 
-	documents := []models.Document{}
+	documents := []*models.Document{}
 	result := i.MySQL.DB.
 		Set("gorm:auto_preload", true).
 		Model(&models.Document{}).
