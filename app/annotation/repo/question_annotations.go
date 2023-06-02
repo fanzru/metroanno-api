@@ -2,6 +2,7 @@ package repo
 
 import (
 	"metroanno-api/app/annotation/domain/models"
+	"metroanno-api/app/annotation/domain/response"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -60,4 +61,56 @@ func (i *AnnotationsRepo) MarkQuestionAnnotations(ctx echo.Context, ids []int64,
 		return err
 	}
 	return nil
+}
+
+func (i *AnnotationsRepo) GetAllQuestionAnnotationsUser(ctx echo.Context, userId, pageNumber int64) (response.PaginationQA, error) {
+	resp := response.PaginationQA{}
+	var totalRows int64
+
+	err := i.MySQL.DB.Model(&models.QuestionAnnotation{}).Where("user_id=?", userId).Count(&totalRows).Error
+	if err != nil {
+		return resp, err
+	}
+
+	// calculate page dan offset
+	// contoh halaman yang diminta
+	pageSize := 10 // contoh ukuran halaman
+	offset := (int(pageNumber) - 1) * pageSize
+
+	qa := []*models.QuestionAnnotation{}
+	result := i.MySQL.DB.Set("gorm:auto_preload", true).Model(&models.QuestionAnnotation{}).Where("user_id = ?  ", userId).Order("id desc").Offset(offset).Limit(pageSize).Find(&qa)
+	if result.Error != nil {
+		return resp, result.Error
+	}
+
+	var prevPage, nextPage int64
+	if pageNumber > 1 {
+		prevPage = pageNumber - 1
+	}
+	if int(offset)+len(qa) < int(totalRows) {
+		nextPage = pageNumber + 1
+	}
+
+	var totalPages int64
+	if totalRows%int64(pageSize) == 0 {
+		totalPages = totalRows / int64(pageSize)
+	} else {
+		totalPages = (totalRows / int64(pageSize)) + 1
+	}
+
+	var start int64 = 1
+	if totalRows == 0 {
+		start = 0
+	}
+	resp = response.PaginationQA{
+		Page:  pageNumber,
+		Limit: int64(pageSize),
+		Prev:  prevPage,
+		Next:  nextPage,
+		Start: start,
+		End:   totalPages,
+		Data:  qa,
+	}
+
+	return resp, nil
 }

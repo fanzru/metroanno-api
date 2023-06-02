@@ -26,6 +26,7 @@ type Impl interface {
 	GetDocumentsByCreatedBy(ctx echo.Context) ([]models.Document, error)
 	GetAllSubject(ctx echo.Context) ([]models.Subject, error)
 	MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool) error
+	GetAllQAuser(ctx echo.Context, pageNumber int64) (response.PaginationQA, error)
 }
 
 type AnnotationsApp struct {
