@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (a *AnnotationsApp) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error) {
-	documents, err := a.AnnotationsRepo.GetAllDocumentsAdmin(ctx, pageNumber)
+func (a *AnnotationsApp) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64, limit int64) (response.Pagination, error) {
+	documents, err := a.AnnotationsRepo.GetAllDocumentsAdmin(ctx, pageNumber, limit)
 	if err != nil {
 		return documents, err
 	}
