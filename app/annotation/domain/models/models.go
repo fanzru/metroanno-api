@@ -20,7 +20,7 @@ type Document struct {
 	CreatedAt                              time.Time             `json:"created_at" gorm:"created_at"`
 	DeletedAt                              gorm.DeletedAt        `json:"deleted_at" gorm:"deleted_at"`
 	CreatedByUserId                        int64                 `json:"created_by_user_id" gorm:"created_by_user_id"`
-	UnreadQuestions                        int64                 `json:"unread_questions"`
+	UnreadQuestions                        int64                 `json:"unread_questions" gorm:"-"`
 	QuestionAnnotations                    []*QuestionAnnotation `json:"question_annotations" gorm:"foreignKey:document_id;"`
 }
 
