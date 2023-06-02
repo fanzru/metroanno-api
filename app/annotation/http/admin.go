@@ -23,7 +23,18 @@ func (h *AnnotationHandler) GetAllDocumentsAdmin(ctx echo.Context) error {
 		return response.ResponseErrorBadRequest(ctx, err)
 	}
 
-	r, err := h.App.GetAllDocumentsAdmin(ctx, pageNumber)
+	lim := ctx.QueryParam("limit")
+
+	if lim == "" {
+		lim = "10"
+	}
+
+	limit, err := strconv.ParseInt(fmt.Sprintf("%v", lim), 10, 64)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	r, err := h.App.GetAllDocumentsAdmin(ctx, pageNumber, limit)
 
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)

@@ -56,8 +56,14 @@ type QuestionAnnotation struct {
 	Mark                   bool           `json:"mark" gorm:"mark"`
 	CreatedAt              time.Time      `json:"created_at" gorm:"created_at"`
 	DeletedAt              gorm.DeletedAt `json:"deleted_at" gorm:"deleted_at"`
+	User                   User           `json:"user" gorm:"foreignKey:user_id"`
 
 	//Document Document `json:"-"`
+}
+
+type User struct {
+	Id       int64  `json:"id" gorm:"id"`
+	Username string `json:"username" gorm:"username"`
 }
 
 type DoneDocumentUser struct {

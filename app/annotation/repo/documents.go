@@ -154,7 +154,7 @@ func (a *AnnotationsRepo) GetAllDocumentDoneUser(ctx echo.Context, userID int64)
 	return arrObj, nil
 }
 
-func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64) (response.Pagination, error) {
+func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int64, limit int64) (response.Pagination, error) {
 	resp := response.Pagination{}
 	var totalRows int64
 
@@ -165,11 +165,19 @@ func (i *AnnotationsRepo) GetAllDocumentsAdmin(ctx echo.Context, pageNumber int6
 
 	// calculate page dan offset
 	// contoh halaman yang diminta
-	pageSize := 10 // contoh ukuran halaman
+	pageSize := int(limit) // contoh ukuran halaman
 	offset := (int(pageNumber) - 1) * pageSize
 
 	documents := []*models.Document{}
-	result := i.MySQL.DB.Set("gorm:auto_preload", true).Model(&models.Document{}).Offset(offset).Limit(pageSize).Preload("QuestionAnnotations").Find(&documents)
+	result := i.MySQL.DB.
+		Set("gorm:auto_preload", true).
+		Model(&models.Document{}).
+		Offset(offset).
+		Limit(pageSize).
+		Preload("QuestionAnnotations").
+		Preload("QuestionAnnotations.User").
+		Find(&documents)
+
 	if result.Error != nil {
 		return resp, result.Error
 	}
