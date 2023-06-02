@@ -71,6 +71,7 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	questionannotationsgateway := app.Group("/question-annotations")
 	questionannotationsgateway.POST("/bulk", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.BulkInsertQuestion))
 	questionannotationsgateway.POST("/mark", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AnnotationsHandler.MarkQuestionAnnotations))
+	questionannotationsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllQAuser))
 
 	return app
 }

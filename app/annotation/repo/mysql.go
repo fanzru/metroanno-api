@@ -34,6 +34,7 @@ type Impl interface {
 	GetDocumentsByCreatedBy(ctx echo.Context, userID int64) ([]models.Document, error)
 	GetAllSubject(ctx echo.Context) ([]models.Subject, error)
 	MarkQuestionAnnotations(ctx echo.Context, ids []int64, mark bool)
+	GetAllQuestionAnnotationsUser(ctx echo.Context, userId, pageNumber int64) (response.PaginationQA, error)
 }
 
 type AnnotationsRepo struct {
