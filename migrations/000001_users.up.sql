@@ -13,5 +13,5 @@ CREATE TABLE `users` (
   `status` VARCHAR(255) NOT NULL,
   `created_at` DATETIME NOT NULL,
   `deleted_at` DATETIME,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
