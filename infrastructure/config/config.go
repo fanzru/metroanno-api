@@ -11,15 +11,20 @@ import (
 )
 
 type Config struct {
-	MyMapRandom       []map[string]string `env:"MY_MAP_RANDOM" validate:"required"`
-	MyMapBloom        []map[string]string `env:"MY_MAP_BLOOM" validate:"required"`
-	MyMapGraesser     []map[string]string `env:"MY_MAP_GRAESSER" validate:"required"`
-	APIUrl            string              `env:"API_URL" default:"root" validate:"required"`
-	APIKey            string              `env:"API_KEY" default:"root" validate:"required"`
-	ModelName         string              `env:"MODEL_NAME" default:"root" validate:"required"`
+	MyMapRandom       []QuestionType `env:"MY_MAP_RANDOM" validate:"required"`
+	MyMapBloom        []QuestionType `env:"MY_MAP_BLOOM" validate:"required"`
+	MyMapGraesser     []QuestionType `env:"MY_MAP_GRAESSER" validate:"required"`
+	APIUrl            string         `env:"API_URL" default:"root" validate:"required"`
+	APIKey            string         `env:"API_KEY" default:"root" validate:"required"`
+	ModelName         string         `env:"MODEL_NAME" default:"root" validate:"required"`
 	Database          Database
 	IntBycrptPassword int    `env:"INT_BYCRPT_PASSWORD" validate:"required"`
 	JWTTokenSecret    string `env:"JWT_TOKEN_SECRET" validate:"required"`
+}
+
+type QuestionType struct {
+	Value string `json:"value" validate:"required"`
+	Label string `json:"label" validate:"required"`
 }
 
 type Database struct {
@@ -35,33 +40,30 @@ type Database struct {
 }
 
 func (c *Config) MapTrueValueBloom() map[string]bool {
-	randomValue := make(map[string]bool)
+	resultMap := make(map[string]bool)
 	for _, item := range c.MyMapBloom {
-		for key := range item {
-			randomValue[key] = true
-		}
+		value := item.Value
+		resultMap[value] = true
 	}
-	return randomValue
+	return resultMap
 }
 
 func (c *Config) MapTrueValueRandom() map[string]bool {
-	randomValue := make(map[string]bool)
+	resultMap := make(map[string]bool)
 	for _, item := range c.MyMapRandom {
-		for key := range item {
-			randomValue[key] = true
-		}
+		value := item.Value
+		resultMap[value] = true
 	}
-	return randomValue
+	return resultMap
 }
 
 func (c *Config) MapTrueValueGraesser() map[string]bool {
-	randomValue := make(map[string]bool)
-	for _, item := range c.MyMapRandom {
-		for key := range item {
-			randomValue[key] = true
-		}
+	resultMap := make(map[string]bool)
+	for _, item := range c.MyMapGraesser {
+		value := item.Value
+		resultMap[value] = true
 	}
-	return randomValue
+	return resultMap
 }
 
 func New() (Config, error) {
