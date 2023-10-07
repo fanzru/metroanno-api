@@ -10,6 +10,9 @@ import (
 )
 
 type Config struct {
+	APIUrl            string `env:"API_URL" default:"root" validate:"required"`
+	APIKey            string `env:"API_KEY" default:"root" validate:"required"`
+	ModelName         string `env:"MODEL_NAME" default:"root" validate:"required"`
 	Database          Database
 	IntBycrptPassword int    `env:"INT_BYCRPT_PASSWORD" validate:"required"`
 	JWTTokenSecret    string `env:"JWT_TOKEN_SECRET" validate:"required"`
@@ -36,12 +39,17 @@ func New() (Config, error) {
 		log.Fatal("Error loading .env file")
 	}
 
-	//mysql config
+	// mysql config
 	Config.Database.DBName = os.Getenv("MYSQL_DBNAME")
 	Config.Database.DBUser = os.Getenv("MYSQL_DBUSER")
 	Config.Database.DBPass = os.Getenv("MYSQL_DBPASS")
 	Config.Database.Host = os.Getenv("MYSQL_HOST")
 	Config.Database.Port = os.Getenv("MYSQL_PORT")
+
+	// chat gpt config
+	Config.APIUrl = os.Getenv("API_URL")
+	Config.APIKey = os.Getenv("API_KEY")
+	Config.ModelName = os.Getenv("MODEL_NAME")
 
 	// bcrypt
 	Int, err := strconv.Atoi(os.Getenv("INT_BYCRPT_PASSWORD"))

@@ -4,6 +4,7 @@ import (
 	"log"
 	accounts "metroanno-api/app/accounts/http"
 	annotations "metroanno-api/app/annotation/http"
+	questiongeneration "metroanno-api/app/questiongeneration/http"
 	"metroanno-api/infrastructure/middleware"
 	"net/http"
 
@@ -11,9 +12,10 @@ import (
 )
 
 type ModuleHandler struct {
-	MiddlewareAuth     middleware.MiddlewareAuth
-	AccountHandler     accounts.AccountHandler
-	AnnotationsHandler annotations.AnnotationHandler
+	MiddlewareAuth           middleware.MiddlewareAuth
+	AccountHandler           accounts.AccountHandler
+	AnnotationsHandler       annotations.AnnotationHandler
+	QuestionGeneratioHandler questiongeneration.QuestionGeneratioHandler
 }
 
 func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
@@ -72,6 +74,12 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	questionannotationsgateway.POST("/bulk", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.BulkInsertQuestion))
 	questionannotationsgateway.POST("/mark", h.MiddlewareAuth.BearerTokenMiddlewareAdmin(h.AnnotationsHandler.MarkQuestionAnnotations))
 	questionannotationsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AnnotationsHandler.GetAllQAuser))
+
+	// question generation
+	questiongenerationgateway := app.Group("/question-generation")
+	questiongenerationgateway.POST("/chat-gpt", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.GenerateQuestion))
+	questiongenerationgateway.POST("/save", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.SaveQuestions))
+	questiongenerationgateway.GET("/histories", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.FindQuestions))
 
 	return app
 }
