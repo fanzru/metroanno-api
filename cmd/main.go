@@ -30,12 +30,14 @@ func main() {
 	// services
 	accountsHandler := services.RegisterServiceAccounts(db, cfg)
 	annotationsHandler := services.RegisterServiceAnnotations(db, cfg)
+	qgHandler := services.RegisterServiceQuestionGeneration(db, cfg)
 
 	// register routes
 	mHandler := routes.ModuleHandler{
-		AccountHandler:     accountsHandler,
-		MiddlewareAuth:     middlewareAuth,
-		AnnotationsHandler: annotationsHandler,
+		AccountHandler:           accountsHandler,
+		MiddlewareAuth:           middlewareAuth,
+		AnnotationsHandler:       annotationsHandler,
+		QuestionGeneratioHandler: qgHandler,
 	}
 
 	e := echo.New()
