@@ -2,6 +2,7 @@ package request
 
 import (
 	"fmt"
+	"metroanno-api/infrastructure/config"
 )
 
 type ReqGenerateQuestion struct {
@@ -16,7 +17,7 @@ type ReqGenerateQuestion struct {
 type ReqSaveQuestion struct {
 	Difficulty      string `json:"difficulty" validate:"required"`
 	ReadingMaterial string `json:"reading_material" validate:"required"`
-	Topic           string `json:"topic" validate:"required"`
+	Topic           string `json:"topic" validate:"required" `
 	Random          string `json:"random"`
 	Bloom           string `json:"bloom"`
 	Graesser        string `json:"graesser"`
@@ -24,6 +25,37 @@ type ReqSaveQuestion struct {
 
 type ReqSaveQuestions struct {
 	SaveQuestions []ReqSaveQuestion `json:"save_questions" validate:"required"`
+}
+
+func (r *ReqSaveQuestion) IsEnumValueRandom(value map[string]bool) bool {
+	return value[r.Random]
+}
+
+func (r *ReqSaveQuestion) IsEnumValueBloom(value map[string]bool) bool {
+	return value[r.Bloom]
+}
+
+func (r *ReqSaveQuestion) IsEnumValueGraesser(value map[string]bool) bool {
+	return value[r.Graesser]
+}
+
+func (r *ReqSaveQuestions) IsValidEnum(cfg config.Config) bool {
+	randomValue := cfg.MapTrueValueRandom()
+	bloomValue := cfg.MapTrueValueBloom()
+	graesserValue := cfg.MapTrueValueGraesser()
+
+	for _, q := range r.SaveQuestions {
+		if !q.IsEnumValueBloom(bloomValue) {
+			return false
+		}
+		if !q.IsEnumValueGraesser(graesserValue) {
+			return false
+		}
+		if !q.IsEnumValueRandom(randomValue) {
+			return false
+		}
+	}
+	return true
 }
 
 func (r *ReqGenerateQuestion) BuildContextForChatGpt() string {
