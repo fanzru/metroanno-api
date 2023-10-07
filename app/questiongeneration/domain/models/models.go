@@ -14,3 +14,9 @@ type QuestionsHistory struct {
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
 	UserID          int64      `json:"user_id"`
 }
+
+type QuestionType struct {
+	Random   []map[string]string `json:"random"`
+	Bloom    []map[string]string `json:"bloom"`
+	Graesser []map[string]string `json:"graesser"`
+}

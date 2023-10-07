@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"strconv"
@@ -10,9 +11,12 @@ import (
 )
 
 type Config struct {
-	APIUrl            string `env:"API_URL" default:"root" validate:"required"`
-	APIKey            string `env:"API_KEY" default:"root" validate:"required"`
-	ModelName         string `env:"MODEL_NAME" default:"root" validate:"required"`
+	MyMapRandom       []map[string]string `env:"MY_MAP_RANDOM" validate:"required"`
+	MyMapBloom        []map[string]string `env:"MY_MAP_BLOOM" validate:"required"`
+	MyMapGraesser     []map[string]string `env:"MY_MAP_GRAESSER" validate:"required"`
+	APIUrl            string              `env:"API_URL" default:"root" validate:"required"`
+	APIKey            string              `env:"API_KEY" default:"root" validate:"required"`
+	ModelName         string              `env:"MODEL_NAME" default:"root" validate:"required"`
 	Database          Database
 	IntBycrptPassword int    `env:"INT_BYCRPT_PASSWORD" validate:"required"`
 	JWTTokenSecret    string `env:"JWT_TOKEN_SECRET" validate:"required"`
@@ -30,6 +34,36 @@ type Database struct {
 	MaxIdleTime     time.Duration `env:"MYSQL_MAX_IDLE_TIME" default:"0"`
 }
 
+func (c *Config) MapTrueValueBloom() map[string]bool {
+	randomValue := make(map[string]bool)
+	for _, item := range c.MyMapBloom {
+		for key := range item {
+			randomValue[key] = true
+		}
+	}
+	return randomValue
+}
+
+func (c *Config) MapTrueValueRandom() map[string]bool {
+	randomValue := make(map[string]bool)
+	for _, item := range c.MyMapRandom {
+		for key := range item {
+			randomValue[key] = true
+		}
+	}
+	return randomValue
+}
+
+func (c *Config) MapTrueValueGraesser() map[string]bool {
+	randomValue := make(map[string]bool)
+	for _, item := range c.MyMapRandom {
+		for key := range item {
+			randomValue[key] = true
+		}
+	}
+	return randomValue
+}
+
 func New() (Config, error) {
 	Config := Config{}
 	// build config from env
@@ -37,6 +71,27 @@ func New() (Config, error) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	envValue := os.Getenv("MY_MAP_RANDOM")
+	// map config
+	err = json.Unmarshal([]byte(envValue), &Config.MyMapRandom)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal: %v", err)
+	}
+
+	envValue = os.Getenv("MY_MAP_BLOOM")
+	// map config
+	err = json.Unmarshal([]byte(envValue), &Config.MyMapBloom)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal: %v", err)
+	}
+
+	envValue = os.Getenv("MY_MAP_GRAESSER")
+	// map config
+	err = json.Unmarshal([]byte(envValue), &Config.MyMapGraesser)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal: %v", err)
 	}
 
 	// mysql config

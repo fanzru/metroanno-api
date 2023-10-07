@@ -80,6 +80,6 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	questiongenerationgateway.POST("/chat-gpt", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.GenerateQuestion))
 	questiongenerationgateway.POST("/save", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.SaveQuestions))
 	questiongenerationgateway.GET("/histories", h.MiddlewareAuth.BearerTokenMiddleware(h.QuestionGeneratioHandler.FindQuestions))
-
+	questiongenerationgateway.GET("/question-type", h.QuestionGeneratioHandler.FindConfig)
 	return app
 }
