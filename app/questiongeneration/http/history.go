@@ -37,18 +37,18 @@ func (h *QuestionGeneratioHandler) FindQuestions(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	questionIDStr := ctx.QueryParam("question_id")
-	if questionIDStr == "" {
-		questionIDStr = "0"
+	historyIDStr := ctx.QueryParam("history_id")
+	if historyIDStr == "" {
+		historyIDStr = "0"
 	}
-	questionID, err := strconv.ParseInt(questionIDStr, 10, 64)
+	historyID, err := strconv.ParseInt(historyIDStr, 10, 64)
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)
 	}
 
 	questions, err := h.App.GetHistoryQuestionUser(ctx, params.FilterQuestions{
-		UserID:     userID,
-		QuestionID: questionID,
+		UserID:    userID,
+		HistoryID: historyID,
 	})
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)

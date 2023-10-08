@@ -5,8 +5,16 @@ import (
 	"time"
 )
 
+type Histories struct {
+	ID        int64              `json:"id"`
+	Name      string             `json:"name"`
+	CreatedAt time.Time          `json:"created_at"`
+	DeletedAt *time.Time         `json:"deleted_at,omitempty"`
+	UserID    int64              `json:"user_id"`
+	Questions []QuestionsHistory `json:"questions" gorm:"foreignKey:HistoryID"`
+}
 type QuestionsHistory struct {
-	ID              int        `json:"id"`
+	ID              int64      `json:"id"`
 	Difficulty      string     `json:"difficulty"`
 	ReadingMaterial string     `json:"reading_material"`
 	Topic           string     `json:"topic"`
@@ -15,7 +23,7 @@ type QuestionsHistory struct {
 	Graesser        string     `json:"graesser"`
 	CreatedAt       time.Time  `json:"created_at"`
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
-	UserID          int64      `json:"user_id"`
+	HistoryID       int64      `json:"history_id"`
 }
 
 type QuestionType struct {
