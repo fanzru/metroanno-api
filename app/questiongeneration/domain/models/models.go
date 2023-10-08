@@ -6,12 +6,13 @@ import (
 )
 
 type Histories struct {
-	ID        int64              `json:"id"`
-	Name      string             `json:"name"`
-	CreatedAt time.Time          `json:"created_at"`
-	DeletedAt *time.Time         `json:"deleted_at,omitempty"`
-	UserID    int64              `json:"user_id"`
-	Questions []QuestionsHistory `json:"questions" gorm:"foreignKey:HistoryID"`
+	ID              int64              `json:"id"`
+	Name            string             `json:"name"`
+	CreatedAt       time.Time          `json:"created_at"`
+	DeletedAt       *time.Time         `json:"deleted_at,omitempty"`
+	UserID          int64              `json:"user_id"`
+	Questions       []QuestionsHistory `json:"questions" gorm:"foreignKey:HistoryID"`
+	ReadingMaterial string             `json:"reading_material"`
 }
 type QuestionsHistory struct {
 	ID              int64      `json:"id"`

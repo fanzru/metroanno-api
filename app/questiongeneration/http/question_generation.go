@@ -25,6 +25,7 @@ func (h *QuestionGeneratioHandler) GenerateQuestion(ctx echo.Context) error {
 	if err != nil {
 		return response.ResponseErrorBadRequest(ctx, err)
 	}
+
 	//
 	return response.ResponseSuccessOK(ctx, responseChatGPT)
 }
