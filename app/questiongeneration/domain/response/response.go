@@ -25,8 +25,8 @@ type ChatGPTResponse struct {
 }
 
 type JSONResponse struct {
-	Id              string `json:"id"`
-	ReadingMaterial string `json:"reading_material"`
-	Question        string `json:"question"`
-	Answer          string `json:"answer"`
+	Id         string `json:"id"`
+	SourceText string `json:"source_text"`
+	Question   string `json:"question"`
+	Answer     string `json:"answer"`
 }

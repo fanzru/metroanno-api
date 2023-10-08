@@ -21,6 +21,8 @@ type ReqSaveQuestion struct {
 	Random          string `json:"random"`
 	Bloom           string `json:"bloom"`
 	Graesser        string `json:"graesser"`
+	Question        string `json:"question"`
+	Answer          string `json:"answer"`
 }
 
 type ReqSaveQuestions struct {
@@ -96,7 +98,7 @@ func (r *ReqGenerateQuestion) BuildFunctionsCustomForChatGpt() []map[string]inte
 						"type":        "string",
 						"description": "soal number",
 					},
-					"reading_material": map[string]interface{}{
+					"source_text": map[string]interface{}{
 						"type":        "string",
 						"description": "text reference from the given text material",
 					},
@@ -111,7 +113,7 @@ func (r *ReqGenerateQuestion) BuildFunctionsCustomForChatGpt() []map[string]inte
 				},
 				"required": []string{
 					"id",
-					"reading_material",
+					"source_text",
 					"question",
 					"answer",
 				},
