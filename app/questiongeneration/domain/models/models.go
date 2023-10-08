@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"metroanno-api/infrastructure/config"
+	"time"
+)
 
 type QuestionsHistory struct {
 	ID              int        `json:"id"`
@@ -16,7 +19,7 @@ type QuestionsHistory struct {
 }
 
 type QuestionType struct {
-	Random   []map[string]string `json:"random"`
-	Bloom    []map[string]string `json:"bloom"`
-	Graesser []map[string]string `json:"graesser"`
+	Random   []config.QuestionType `json:"random"`
+	Bloom    []config.QuestionType `json:"bloom"`
+	Graesser []config.QuestionType `json:"graesser"`
 }
