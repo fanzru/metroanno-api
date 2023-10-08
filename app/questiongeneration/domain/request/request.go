@@ -96,24 +96,24 @@ func (r *ReqGenerateQuestion) BuildFunctionsCustomForChatGpt() []map[string]inte
 						"type":        "string",
 						"description": "soal number",
 					},
-					"referensi_text": map[string]interface{}{
+					"reading_material": map[string]interface{}{
 						"type":        "string",
 						"description": "text reference from the given text material",
 					},
-					"soal": map[string]interface{}{
+					"question": map[string]interface{}{
 						"type":        "string",
 						"description": "Make questions from the material provided",
 					},
-					"jawaban": map[string]interface{}{
+					"answer": map[string]interface{}{
 						"type":        "string",
 						"description": "Make an answer from the material provided",
 					},
 				},
 				"required": []string{
 					"id",
-					"referensi_text",
-					"soal",
-					"jawaban",
+					"reading_material",
+					"question",
+					"answer",
 				},
 			},
 		},
