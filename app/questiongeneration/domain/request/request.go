@@ -26,7 +26,8 @@ type ReqSaveQuestion struct {
 }
 
 type ReqSaveQuestions struct {
-	SaveQuestions []ReqSaveQuestion `json:"save_questions" validate:"required"`
+	ReadingMaterial string            `json:"reading_material" validate:"required"`
+	SaveQuestions   []ReqSaveQuestion `json:"save_questions" validate:"required"`
 }
 
 func (r *ReqSaveQuestion) IsEnumValueRandom(value map[string]bool) bool {

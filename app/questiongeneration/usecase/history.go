@@ -32,10 +32,11 @@ func (a *QuestionGenerationApp) SaveQuestions(ctx echo.Context, params request.R
 	currentTime := time.Now().In(location)
 
 	history := models.Histories{
-		Name:      fmt.Sprintf(`history %v`, currentTime),
-		CreatedAt: time.Now(),
-		DeletedAt: nil,
-		UserID:    userID,
+		Name:            fmt.Sprintf(`history %v`, currentTime),
+		CreatedAt:       time.Now(),
+		DeletedAt:       nil,
+		UserID:          userID,
+		ReadingMaterial: params.ReadingMaterial,
 	}
 
 	err = a.QuestionGenerationRepo.BulkInsertQuestions(ctx, params, history)
