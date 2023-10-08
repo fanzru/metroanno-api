@@ -63,27 +63,24 @@ func (r *ReqSaveQuestions) IsValidEnum(cfg config.Config) bool {
 
 func (r *ReqGenerateQuestion) BuildContextForChatGpt() string {
 	return fmt.Sprintf(`
+		PLEASE RETURN RESPONSE ARRAY of OBJECTS!!
+
 		context:
-		- Saya memiliki sebuah material text dibawah ini
-		
-		topic:
-		"""
-		%v
-		"""
+		- saya memiliki sebuah material text dibawah ini
+		- buatkan pertanyaan berjumlah %v
+
 		material text:
 		"""
 		%v
 		"""
-
+		
 		instruksi: 
 		 - buatkan pertanyaan dengan jawabannya dan berikan juga referensi text yang kamu gunakan untuk membuat pertanyaan
 		 - referensi text merupakan kalimat yang menjadi tempat kamu membuat soal dan jawaban
-		 - pertanyaan akan berjumlah %v
-		 - tolong berikan response dalam array!
+	
 		`,
-		r.Topic,
-		r.ReadingMaterial,
 		r.QuestionCount,
+		r.ReadingMaterial,
 	)
 }
 

@@ -33,7 +33,7 @@ func (a *QuestionGenerationApp) GenerateQuestion(ctx echo.Context, params reques
 		"function_call":     "auto",
 		"functions":         functionContext,
 		"temperature":       0,
-		"max_tokens":        256,
+		"max_tokens":        1000,
 		"top_p":             1,
 		"frequency_penalty": 0,
 		"presence_penalty":  0,
@@ -83,6 +83,7 @@ func (a *QuestionGenerationApp) GenerateQuestion(ctx echo.Context, params reques
 func (a *QuestionGenerationApp) constructResponse(ctx echo.Context, resp *http.Response, params request.ReqGenerateQuestion) ([]response.JSONResponse, error) {
 	// Membaca dan mencetak respons
 	var result response.ChatGPTResponse
+	fmt.Println("--- resp : ", resp.Body)
 	err := json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		fmt.Println("Error decoding response:", err)
