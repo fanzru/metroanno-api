@@ -22,23 +22,23 @@ func (a *QuestionGenerationApp) SaveQuestions(ctx echo.Context, params request.R
 		return err
 	}
 
-	datas := []models.QuestionsHistory{}
-	for _, p := range params.SaveQuestions {
-		datas = append(datas, models.QuestionsHistory{
-			ID:              0,
-			Difficulty:      p.Difficulty,
-			ReadingMaterial: p.ReadingMaterial,
-			Topic:           p.Topic,
-			Random:          p.Random,
-			Bloom:           p.Bloom,
-			Graesser:        p.Graesser,
-			CreatedAt:       time.Now(),
-			DeletedAt:       nil,
-			UserID:          userID,
-		})
+	// Set zona waktu ke Jakarta (Waktu Indonesia Barat)
+	location, err := time.LoadLocation("Asia/Jakarta")
+	if err != nil {
+		return err
 	}
 
-	err = a.QuestionGenerationRepo.BulkInsertQuestions(ctx, datas)
+	// Dapatkan waktu saat ini di zona waktu Jakarta
+	currentTime := time.Now().In(location)
+
+	history := models.Histories{
+		Name:      fmt.Sprintf(`history %v`, currentTime),
+		CreatedAt: time.Now(),
+		DeletedAt: nil,
+		UserID:    userID,
+	}
+
+	err = a.QuestionGenerationRepo.BulkInsertQuestions(ctx, params, history)
 	if err != nil {
 		return err
 	}
@@ -46,8 +46,8 @@ func (a *QuestionGenerationApp) SaveQuestions(ctx echo.Context, params request.R
 	return nil
 }
 
-func (a *QuestionGenerationApp) GetHistoryQuestionUser(ctx echo.Context, params params.FilterQuestions) ([]models.QuestionsHistory, error) {
-	questions, err := a.QuestionGenerationRepo.FindQuestions(ctx, params.UserID, params.QuestionID)
+func (a *QuestionGenerationApp) GetHistoryQuestionUser(ctx echo.Context, params params.FilterQuestions) ([]models.Histories, error) {
+	questions, err := a.QuestionGenerationRepo.FindQuestions(ctx, params.UserID, params.HistoryID)
 	if err != nil {
 		return nil, err
 	}
