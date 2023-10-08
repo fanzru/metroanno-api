@@ -3,9 +3,11 @@ package usecase
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"metroanno-api/app/questiongeneration/domain/request"
 	"metroanno-api/app/questiongeneration/domain/response"
+	"metroanno-api/pkg/debugger"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -86,27 +88,45 @@ func (a *QuestionGenerationApp) constructResponse(ctx echo.Context, resp *http.R
 		fmt.Println("Error decoding response:", err)
 		return []response.JSONResponse{}, nil
 	}
-
+	debugger.PrintJson(result, "ChatGPTResponse")
 	// unmarshal response from chat gpt
 	var responseUser []response.JSONResponse
 
-	if params.QuestionCount > 1 {
-		stringResponse := result.Choices[0].Message.FunctionCall.Arguments
-		err = json.Unmarshal([]byte(stringResponse), &responseUser)
-		if err != nil {
-			fmt.Println("Error unmarshaling JSON message chat gpt:", err)
-			return []response.JSONResponse{}, nil
-		}
-	} else {
+	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
+	err = json.Unmarshal([]byte(stringResponse), &responseUser)
+	if err != nil {
+
 		var ru response.JSONResponse
 		stringResponse := result.Choices[0].Message.FunctionCall.Arguments
 		err = json.Unmarshal([]byte(stringResponse), &ru)
 		if err != nil {
 			fmt.Println("Error unmarshaling JSON message chat gpt:", err)
-			return []response.JSONResponse{}, nil
+			return []response.JSONResponse{}, errors.New("error unmarshaling JSON message chat gpt")
 		}
 		responseUser = append(responseUser, ru)
-	}
 
+		fmt.Println("Error unmarshaling JSON message chat gpt:", err)
+		return responseUser, nil
+	}
 	return responseUser, nil
+
+	// if params.QuestionCount > 1 {
+	// 	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
+	// 	err = json.Unmarshal([]byte(stringResponse), &responseUser)
+	// 	if err != nil {
+	// 		fmt.Println("Error unmarshaling JSON message chat gpt:", err)
+	// 		return []response.JSONResponse{}, nil
+	// 	}
+	// } else {
+	// 	var ru response.JSONResponse
+	// 	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
+	// 	err = json.Unmarshal([]byte(stringResponse), &ru)
+	// 	if err != nil {
+	// 		fmt.Println("Error unmarshaling JSON message chat gpt:", err)
+	// 		return []response.JSONResponse{}, nil
+	// 	}
+	// 	responseUser = append(responseUser, ru)
+	// }
+
+	// return responseUser, nil
 }
