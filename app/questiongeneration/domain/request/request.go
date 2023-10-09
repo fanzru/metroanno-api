@@ -15,14 +15,14 @@ type ReqGenerateQuestion struct {
 }
 
 type ReqSaveQuestion struct {
-	Difficulty      string `json:"difficulty" validate:"required"`
-	ReadingMaterial string `json:"reading_material" validate:"required"`
-	Topic           string `json:"topic" validate:"required" `
-	Random          string `json:"random"`
-	Bloom           string `json:"bloom"`
-	Graesser        string `json:"graesser"`
-	Question        string `json:"question"`
-	Answer          string `json:"answer"`
+	Difficulty string `json:"difficulty" validate:"required"`
+	SourceText string `json:"source_text" validate:"required"`
+	Topic      string `json:"topic" validate:"required" `
+	Random     string `json:"random"`
+	Bloom      string `json:"bloom"`
+	Graesser   string `json:"graesser"`
+	Question   string `json:"question"`
+	Answer     string `json:"answer"`
 }
 
 type ReqSaveQuestions struct {

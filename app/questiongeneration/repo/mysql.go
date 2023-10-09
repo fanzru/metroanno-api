@@ -37,18 +37,18 @@ func (repo *QuestionGenerationRepo) BulkInsertQuestions(ctx echo.Context, params
 	datas := []models.QuestionsHistory{}
 	for _, p := range params.SaveQuestions {
 		datas = append(datas, models.QuestionsHistory{
-			ID:              0,
-			Difficulty:      p.Difficulty,
-			ReadingMaterial: p.ReadingMaterial,
-			Topic:           p.Topic,
-			Random:          p.Random,
-			Bloom:           p.Bloom,
-			Graesser:        p.Graesser,
-			CreatedAt:       time.Now(),
-			DeletedAt:       nil,
-			HistoryID:       history.ID,
-			Question:        p.Question,
-			Answer:          p.Answer,
+			ID:         0,
+			Difficulty: p.Difficulty,
+			SourceText: p.SourceText,
+			Topic:      p.Topic,
+			Random:     p.Random,
+			Bloom:      p.Bloom,
+			Graesser:   p.Graesser,
+			CreatedAt:  time.Now(),
+			DeletedAt:  nil,
+			HistoryID:  history.ID,
+			Question:   p.Question,
+			Answer:     p.Answer,
 		})
 	}
 
