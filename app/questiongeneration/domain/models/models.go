@@ -17,7 +17,7 @@ type Histories struct {
 type QuestionsHistory struct {
 	ID         int64      `json:"id"`
 	Difficulty string     `json:"difficulty"`
-	SourceText string     `json:"source_texg"`
+	SourceText string     `json:"source_text"`
 	Question   string     `json:"question"`
 	Answer     string     `json:"answer"`
 	Topic      string     `json:"topic"`
