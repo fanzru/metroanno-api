@@ -57,7 +57,7 @@ func (h AccountHandler) RegisterUserV2(ctx echo.Context) error {
 		return response.ResponseErrorBadRequest(ctx, err)
 	}
 
-	err = h.AccountsApp.UserRegister(ctx, request.UserRegisterReq{
+	err = h.AccountsApp.UserRegisterV2(ctx, request.UserRegisterReq{
 		Username: userRegisterReq.Username,
 		Password: userRegisterReq.Password,
 		Contact:  userRegisterReq.Contact,
