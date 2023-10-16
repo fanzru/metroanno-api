@@ -76,6 +76,41 @@ func (i AccountsApp) UserRegister(ctx echo.Context, param request.UserRegisterRe
 	return nil
 }
 
+func (i AccountsApp) UserRegisterV2(ctx echo.Context, param request.UserRegisterReq) error {
+	_, err := i.AccountsRepo.GetUserByUsername(ctx, param.Username)
+	if err == nil {
+		return errs.ErrEmailUsed
+	}
+	if !errors.Is(err, errs.ErrInstanceNotFound) {
+		return err
+	}
+
+	cryptPass, err := bcrypt.GenerateFromPassword([]byte(param.Password), i.Cfg.IntBycrptPassword)
+	if err != nil {
+		return err
+	}
+
+	_, err = i.AccountsRepo.CreateUser(ctx, models.User{
+		Id:                        0,
+		Type:                      1,    // type 1 user not admin
+		IsDocumentAnnotator:       true, // default true ?
+		IsQuestionAnnotator:       true, // default true ?
+		Username:                  param.Username,
+		Contact:                   param.Contact,
+		Age:                       param.Age,
+		NumberOfDocumentAdded:     0,
+		NumberOfQuestionAnnotated: 0,
+		Status:                    "ACTIVED",
+		Password:                  string(cryptPass),
+		CreatedAt:                 time.Now(),
+	}, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (i AccountsApp) AdminRegister(ctx echo.Context, param request.UserRegisterReq) error {
 	_, err := i.AccountsRepo.GetUserByUsername(ctx, param.Username)
 	if err == nil {

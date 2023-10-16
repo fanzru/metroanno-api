@@ -42,6 +42,7 @@ func NewRoutes(h ModuleHandler, app *echo.Echo) *echo.Echo {
 	// accounts
 	accountsgateway := app.Group("/accounts")
 	accountsgateway.POST("/register", h.AccountHandler.RegisterUser)
+	accountsgateway.POST("/register/v2", h.AccountHandler.RegisterUserV2)
 	accountsgateway.POST("/login/annotator", h.AccountHandler.Login)
 	accountsgateway.GET("/user", h.MiddlewareAuth.BearerTokenMiddleware(h.AccountHandler.UserProfile))
 

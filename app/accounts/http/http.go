@@ -45,6 +45,31 @@ func (h AccountHandler) RegisterUser(ctx echo.Context) error {
 	return response.ResponseSuccessCreated(ctx, nil)
 }
 
+func (h AccountHandler) RegisterUserV2(ctx echo.Context) error {
+	userRegisterReq := &request.UserRegisterReqV2{}
+
+	err := ctx.Bind(userRegisterReq)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+	err = validator.New().Struct(userRegisterReq)
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	err = h.AccountsApp.UserRegister(ctx, request.UserRegisterReq{
+		Username: userRegisterReq.Username,
+		Password: userRegisterReq.Password,
+		Contact:  userRegisterReq.Contact,
+		Age:      userRegisterReq.Age,
+	})
+	if err != nil {
+		return response.ResponseErrorBadRequest(ctx, err)
+	}
+
+	return response.ResponseSuccessCreated(ctx, nil)
+}
+
 func (h AccountHandler) RegisterAdmin(ctx echo.Context) error {
 	userRegisterReq := &request.UserRegisterReq{}
 
