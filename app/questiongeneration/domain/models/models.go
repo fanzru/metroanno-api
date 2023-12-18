@@ -27,6 +27,7 @@ type QuestionsHistory struct {
 	CreatedAt  time.Time  `json:"created_at"`
 	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
 	HistoryID  int64      `json:"history_id"`
+	Type       string     `json:"type"`
 }
 
 type QuestionType struct {

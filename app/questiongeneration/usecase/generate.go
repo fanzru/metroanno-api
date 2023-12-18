@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"metroanno-api/app/questiongeneration/domain/request"
 	"metroanno-api/app/questiongeneration/domain/response"
-	"metroanno-api/pkg/debugger"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -17,7 +16,6 @@ func (a *QuestionGenerationApp) GenerateQuestion(ctx echo.Context, params reques
 
 	// construct command to chat gpt
 	contextMessage := params.BuildContextForChatGpt()
-
 	// call chat gpt api endpoint
 	functionContext := params.BuildFunctionsCustomForChatGpt()
 
@@ -33,7 +31,7 @@ func (a *QuestionGenerationApp) GenerateQuestion(ctx echo.Context, params reques
 		"function_call":     "auto",
 		"functions":         functionContext,
 		"temperature":       0,
-		"max_tokens":        1000,
+		"max_tokens":        10000,
 		"top_p":             1,
 		"frequency_penalty": 0,
 		"presence_penalty":  0,
@@ -83,13 +81,11 @@ func (a *QuestionGenerationApp) GenerateQuestion(ctx echo.Context, params reques
 func (a *QuestionGenerationApp) constructResponse(ctx echo.Context, resp *http.Response, params request.ReqGenerateQuestion) ([]response.JSONResponse, error) {
 	// Membaca dan mencetak respons
 	var result response.ChatGPTResponse
-	fmt.Println("--- resp : ", resp.Body)
 	err := json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		fmt.Println("Error decoding response:", err)
 		return []response.JSONResponse{}, nil
 	}
-	debugger.PrintJson(result, "ChatGPTResponse")
 	// unmarshal response from chat gpt
 	var responseUser []response.JSONResponse
 
@@ -110,24 +106,76 @@ func (a *QuestionGenerationApp) constructResponse(ctx echo.Context, resp *http.R
 		return responseUser, nil
 	}
 	return responseUser, nil
+}
 
-	// if params.QuestionCount > 1 {
-	// 	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
-	// 	err = json.Unmarshal([]byte(stringResponse), &responseUser)
-	// 	if err != nil {
-	// 		fmt.Println("Error unmarshaling JSON message chat gpt:", err)
-	// 		return []response.JSONResponse{}, nil
-	// 	}
-	// } else {
-	// 	var ru response.JSONResponse
-	// 	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
-	// 	err = json.Unmarshal([]byte(stringResponse), &ru)
-	// 	if err != nil {
-	// 		fmt.Println("Error unmarshaling JSON message chat gpt:", err)
-	// 		return []response.JSONResponse{}, nil
-	// 	}
-	// 	responseUser = append(responseUser, ru)
-	// }
+func (a *QuestionGenerationApp) TextDetection(ctx echo.Context, params request.ReqTextDetection) (*response.ResTextDetection, error) {
 
-	// return responseUser, nil
+	// construct command to chat gpt
+	contextMessage := params.BuildContextForChatGpt()
+
+	// call chat gpt api endpoint
+	functionContext := params.BuildFunctionsCustomForChatGpt()
+
+	// Data untuk dikirimkan dalam permintaan POST
+	data := map[string]interface{}{
+		"model": a.Cfg.ModelName,
+		"messages": []map[string]interface{}{
+			{
+				"role":    "user",
+				"content": fmt.Sprintf(`context: \n %s`, contextMessage),
+			},
+		},
+		"function_call":     "auto",
+		"functions":         functionContext,
+		"temperature":       1,
+		"max_tokens":        10000,
+		"top_p":             1,
+		"frequency_penalty": 0,
+		"presence_penalty":  0,
+	}
+
+	// Mengubah data menjadi format JSON
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		return nil, err
+	}
+
+	// Membuat permintaan POST
+	req, err := http.NewRequest("POST", a.Cfg.APIUrl, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return nil, err
+	}
+
+	// Menambahkan header ke permintaan
+	req.Header.Set("Content-Type", "application/json")
+
+	// Ganti "YOUR_API_KEY" dengan kunci API OpenAI Anda
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", a.Cfg.APIKey))
+
+	// Mengirimkan permintaan
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// construct response
+	var result response.ChatGPTResponse
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		fmt.Println("Error decoding response:", err)
+		return nil, err
+	}
+	var response response.ResTextDetection
+	stringResponse := result.Choices[0].Message.FunctionCall.Arguments
+	err = json.Unmarshal([]byte(stringResponse), &response)
+	if err != nil {
+		return nil, err
+	}
+	// return response
+	return &response, nil
 }

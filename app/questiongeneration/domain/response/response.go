@@ -29,4 +29,9 @@ type JSONResponse struct {
 	SourceText string `json:"source_text"`
 	Question   string `json:"question"`
 	Answer     string `json:"answer"`
+	Type       string `json:"type"`
+}
+
+type ResTextDetection struct {
+	Topic string `json:"topic"`
 }

@@ -49,6 +49,7 @@ func (repo *QuestionGenerationRepo) BulkInsertQuestions(ctx echo.Context, params
 			HistoryID:  history.ID,
 			Question:   p.Question,
 			Answer:     p.Answer,
+			Type:       p.Type,
 		})
 	}
 
