@@ -21,7 +21,7 @@ type ReqTextDetection struct {
 type ReqSaveQuestion struct {
 	Difficulty string `json:"difficulty" validate:"required"`
 	SourceText string `json:"source_text" validate:"required"`
-	Topic      string `json:"topic" validate:"required" `
+	Topic      string `json:"topic" `
 	Random     string `json:"random"`
 	Bloom      string `json:"bloom"`
 	Graesser   string `json:"graesser"`
