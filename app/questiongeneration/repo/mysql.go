@@ -83,7 +83,7 @@ func (repo *QuestionGenerationRepo) FindQuestions(ctx echo.Context, userID, ques
 		query = query.Where("id = ?", questionID)
 	}
 
-	err := query.Preload("Questions").Find(&histories).Error
+	err := query.Preload("Questions").Order("created_at DESC").Find(&histories).Error
 	if err != nil {
 		return nil, err
 	}
