@@ -7,7 +7,7 @@ import (
 
 type ReqGenerateQuestion struct {
 	ReadingMaterial string   `json:"reading_material" validate:"required"`
-	Topic           string   `json:"topic" validate:"required"`
+	Topic           string   `json:"topic"`
 	Random          string   `json:"random"`
 	Bloom           []string `json:"bloom"`
 	Graesser        []string `json:"graesser"`
