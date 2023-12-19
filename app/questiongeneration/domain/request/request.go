@@ -162,8 +162,24 @@ func (r *ReqGenerateQuestion) BuildFunctionsCustomForChatGpt() []map[string]inte
 	}
 	return result
 }
-
 func (r *ReqTextDetection) BuildContextForChatGpt() string {
+	return fmt.Sprintf(`
+	Please classify the following reading into exactly one of the following topic:
+	a. Math
+	b. Physics
+	c. History
+	d. Biology
+	
+	Reading:
+	"""
+	%v
+	"""
+	`,
+		r.ReadingMaterial,
+	)
+}
+
+func (r *ReqTextDetection) BuildContextForChatGpt2() string {
 	return fmt.Sprintf(`
 		text:
 		"""
@@ -186,14 +202,20 @@ func (r *ReqTextDetection) BuildContextForChatGpt() string {
 func (r *ReqTextDetection) BuildFunctionsCustomForChatGpt() []map[string]interface{} {
 	result := []map[string]interface{}{
 		{
-			"name":        "text_detection",
-			"description": `deteksi topik dari text yang saya kirimkan!!`,
+			"name": "text_detection",
+			"description": `
+				Please classify the following reading into exactly one of the following topic:
+					a. Math
+					b. Physics
+					c. History
+					d. Biology
+			`,
 			"parameters": map[string]interface{}{
 				"type": "object",
 				"properties": map[string]interface{}{
 					"topic": map[string]interface{}{
 						"type":        "string",
-						"description": "hasil deteksi text yang saya kirim topicnya tentang apa",
+						"description": "type",
 					},
 				},
 				"required": []string{
