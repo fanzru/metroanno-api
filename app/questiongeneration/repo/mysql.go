@@ -1,10 +1,12 @@
 package repo
 
 import (
+	"fmt"
 	"metroanno-api/app/questiongeneration/domain/models"
 	"metroanno-api/app/questiongeneration/domain/request"
 	"metroanno-api/infrastructure/config"
 	"metroanno-api/infrastructure/database"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -36,20 +38,24 @@ func (repo *QuestionGenerationRepo) BulkInsertQuestions(ctx echo.Context, params
 	}
 	datas := []models.QuestionsHistory{}
 	for _, p := range params.SaveQuestions {
+		combinedArray := append(p.Graesser, p.Bloom...)
+		combinedArray = append(combinedArray, p.Random)
+		typeData := strings.Join(combinedArray, ", ")
+		typeData = strings.TrimSuffix(typeData, ", ")
 		datas = append(datas, models.QuestionsHistory{
 			ID:         0,
 			Difficulty: p.Difficulty,
 			SourceText: p.SourceText,
 			Topic:      p.Topic,
 			Random:     p.Random,
-			Bloom:      p.Bloom,
-			Graesser:   p.Graesser,
+			Bloom:      fmt.Sprintf("%v", p.Bloom),
+			Graesser:   fmt.Sprintf("%v", p.Graesser),
 			CreatedAt:  time.Now(),
 			DeletedAt:  nil,
 			HistoryID:  history.ID,
 			Question:   p.Question,
 			Answer:     p.Answer,
-			Type:       p.Type,
+			Type:       typeData,
 		})
 	}
 

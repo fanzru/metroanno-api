@@ -2,7 +2,6 @@ package request
 
 import (
 	"fmt"
-	"metroanno-api/infrastructure/config"
 )
 
 type ReqGenerateQuestion struct {
@@ -19,15 +18,15 @@ type ReqTextDetection struct {
 }
 
 type ReqSaveQuestion struct {
-	Difficulty string `json:"difficulty" validate:"required"`
-	SourceText string `json:"source_text" validate:"required"`
-	Topic      string `json:"topic" `
-	Random     string `json:"random"`
-	Bloom      string `json:"bloom"`
-	Graesser   string `json:"graesser"`
-	Question   string `json:"question"`
-	Answer     string `json:"answer"`
-	Type       string `json:"type"`
+	Difficulty string   `json:"difficulty" validate:"required"`
+	SourceText string   `json:"source_text" validate:"required"`
+	Topic      string   `json:"topic" `
+	Random     string   `json:"random"`
+	Bloom      []string `json:"bloom"`
+	Graesser   []string `json:"graesser"`
+	Question   string   `json:"question"`
+	Answer     string   `json:"answer"`
+	Type       string   `json:"type"`
 }
 
 type ReqSaveQuestions struct {
@@ -39,32 +38,32 @@ func (r *ReqSaveQuestion) IsEnumValueRandom(value map[string]bool) bool {
 	return value[r.Random]
 }
 
-func (r *ReqSaveQuestion) IsEnumValueBloom(value map[string]bool) bool {
-	return value[r.Bloom]
-}
+// func (r *ReqSaveQuestion) IsEnumValueBloom(value map[string]bool) bool {
+// 	return value[r.Bloom]
+// }
 
-func (r *ReqSaveQuestion) IsEnumValueGraesser(value map[string]bool) bool {
-	return value[r.Graesser]
-}
+// func (r *ReqSaveQuestion) IsEnumValueGraesser(value map[string]bool) bool {
+// 	return value[r.Graesser]
+// }
 
-func (r *ReqSaveQuestions) IsValidEnum(cfg config.Config) bool {
-	randomValue := cfg.MapTrueValueRandom()
-	bloomValue := cfg.MapTrueValueBloom()
-	graesserValue := cfg.MapTrueValueGraesser()
+// func (r *ReqSaveQuestions) IsValidEnum(cfg config.Config) bool {
+// 	randomValue := cfg.MapTrueValueRandom()
+// 	bloomValue := cfg.MapTrueValueBloom()
+// 	graesserValue := cfg.MapTrueValueGraesser()
 
-	for _, q := range r.SaveQuestions {
-		if !q.IsEnumValueBloom(bloomValue) {
-			return false
-		}
-		if !q.IsEnumValueGraesser(graesserValue) {
-			return false
-		}
-		if !q.IsEnumValueRandom(randomValue) {
-			return false
-		}
-	}
-	return true
-}
+// 	for _, q := range r.SaveQuestions {
+// 		if !q.IsEnumValueBloom(bloomValue) {
+// 			return false
+// 		}
+// 		if !q.IsEnumValueGraesser(graesserValue) {
+// 			return false
+// 		}
+// 		if !q.IsEnumValueRandom(randomValue) {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
 
 func (r *ReqGenerateQuestion) BuildContextForChatGpt() string {
 	topic := ""

@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	errs "metroanno-api/app/questiongeneration/domain/errors"
 	"metroanno-api/app/questiongeneration/domain/models"
 	"metroanno-api/app/questiongeneration/domain/params"
 	"metroanno-api/app/questiongeneration/domain/request"
@@ -13,9 +12,9 @@ import (
 )
 
 func (a *QuestionGenerationApp) SaveQuestions(ctx echo.Context, params request.ReqSaveQuestions) error {
-	if !params.IsValidEnum(a.Cfg) {
-		return errs.ErrEnumNotValid
-	}
+	// if !params.IsValidEnum(a.Cfg) {
+	// 	return errs.ErrEnumNotValid
+	// }
 
 	userID, err := strconv.ParseInt(fmt.Sprintf("%v", ctx.Get("user_id")), 10, 64)
 	if err != nil {
